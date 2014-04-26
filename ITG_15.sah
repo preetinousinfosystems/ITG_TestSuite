@@ -1,0 +1,105 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahiprintbuyer";
+var $TP_Password = "Pa55Word!!";
+
+var $Agency = "ITG";
+var $Printer = "ITG Print Management";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Approve the new Project > for ITG Agency Project");
+$tb.start();
+	PrintBuyer_NavigateToNewProject($ProjRef);
+	PrintBuyer_ApproveAllBriefs();
+	Logout();
+	
+$tb.end();
+
+var $tc = _testcase("Step C", "ITG Agency Rejects All Briefs");
+$tc.start();
+	ITGAgency_NavigateToNewProject($ProjRef);
+	ITGAgency_RejectAllBriefs();
+	Logout();
+	
+$tc.end();
+
+var $t1 = _testcase("Step 1", "Login as ITG Print Buyer and navigate to Workflow > Key Actions > ITG Agency Rejected Briefs > Click on Briefs Hyperlink");
+$t1.start();
+
+	LoginAsPrintBuyerandNavigateToKeyActions($TP_Username, $TP_Password);
+	Common_NavigateToPrintBuyerWorkflow();
+	_click($_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON);
+	Assert_TableFieldsITGAgencyRejectBriefsProjectLevel();
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Click on  the Attachments link of a brief in the 'ITG Agency Rejected Brief details page'");
+$t2.start();
+		
+		Assert_TableFieldsITGAgencyRejectBriefsProjectLevel();
+		Assert_ITGAgencyRejectBriefs_BriefTableFields();
+		_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_ATTACHMENTS)));
+		_assertEqual("Attachments", _getText(_heading2("Attachments", _in($_DIV_ATTACHMENT_OVERLAY_CONTAINER))));
+		
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Verify the content of the Attachment Overlay");
+$t3.start();
+		
+		_assertExists($_DIV_USER_DETAIL);
+		_assert(_isVisible($_DIV_USER_DETAIL));
+		
+$t3.end();
+
+var $t4 = _testcase("Step 4", "Verify the links in the Attachment Overlay");
+$t4.start();
+
+		_assert(_isVisible($_SPAN_CLOSE_ATTACHMENTS)); 
+	    _assert(_isVisible(_link("/.*/", _in($_DIV_ATTACHMENT_OVERLAY_CONTENT)))); 
+		Assert_LinksOfAttachment();
+		
+$t4.end();
+
+var $t5 = _testcase("Step 5", "Click on the Attachment Close Link");
+$t5.start();
+
+		_click($_SPAN_CLOSE_ATTACHMENTS);
+		_assertNotTrue(_isVisible(_heading2("Attachments", _in($_DIV_ATTACHMENT_OVERLAY_CONTAINER))));
+		
+$t5.end();
+
+var $t6 = _testcase("Step 6", "Click the File Description to Download file");
+$t6.start();
+
+		_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_ATTACHMENTS)));
+		Assert_FileDownload($Filename1);
+		_click($_SPAN_CLOSE_ATTACHMENTS);
+		Logout();
+		
+$t6.end();

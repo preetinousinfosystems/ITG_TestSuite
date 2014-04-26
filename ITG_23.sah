@@ -1,0 +1,100 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahioutagency";
+var $TP_Password = "Pa55Word!!";
+
+var $Agency = "Simpson Group(Agency)";
+var $Printer = "Communisis";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Outside Agency Accepts All Briefs");
+$tb.start();
+	OutsideAgency_NavigateToNewProject($ProjRef)
+	OutsideAgency_AcceptAllBriefs();
+	Logout();
+	
+$tb.end();
+
+var $t1 = _testcase("Step 1", "LoginAsAgencyUserNavigate to Workflow > Key Actions > Awaiting Artwork and click on the Briefs link ");
+
+$t1.start();
+	LoginAsAgencyUserandNavigateToKeyActions($TP_Username, $TP_Password);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_assert(_isVisible($CMN_ICON_AWAITING_ARTWORK));
+	_click($CMN_ICON_AWAITING_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("NoOfBriefs", _near(_cell($ProjRef))));
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Click on the 'Costs' link in the Awaiting Artwork, Briefs page");
+
+$t2.start();
+
+_click(_link("Costs", _near(_cell($BriefRef))));
+	
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Verify the tabs in the 'Cost Overlay'");
+
+$t3.start();
+
+Verify_Tabs_Cost_Overlay_Briefsview();
+	
+$t3.end();
+
+var $t4 = _testcase("Step 4", "Verify fields in the 'Total Cost' Tab");
+
+$t4.start();
+
+Verifyfileds_TotalCosttab();
+	
+$t4.end();
+
+var $t5 = _testcase("Step 5", "Verify the fields 'Costs overlay, Version Cost' tab");
+
+$t5.start();
+
+Verifyfields_Costs_overlay_VersionCost_tab();
+	
+$t5.end();
+
+var $t6 = _testcase("Step 6", "Close the 'Costs overlay");
+
+$t6.start();
+
+Close_Costoverlay();
+	
+$t6.end();
+
+var $t7 = _testcase("Step 7", "Do not select tick box to submit an Artwork and cost Click the Submit Button");
+
+$t7.start();
+
+	Submit_Awaitingartwork();
+	verify_Validationerrorpopup();
+	_click($_SPAN_CLOSE);
+	 Logout();
+$t7.end();

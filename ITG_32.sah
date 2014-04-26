@@ -1,0 +1,162 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahiagency";
+var $Password = "Pa55Word!!";
+var $client_Username = "sahiclientA";
+
+var $Agency = "ITG";
+var $Printer = "ITG Print Management";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ArtworkName = "TestreeArt";
+var $ArtworkName1 = "TestreeArt1";
+var $ArtworkName2 = "TestreeArt2";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefRef1 = "";
+var $BriefRef2 = "";
+var $hours = "6.00";
+var $costs = "15.34";
+var $BriefReference = new Array();
+var $comment528char = "!@#$%^&*()1234567890uvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmfghijklmnopqrstuvwxyz";
+var $comment500char = "!@#$%^&*()1234567890uvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdef";
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	$BriefRef1 = $BriefReference[1];
+	$BriefRef2 = $BriefReference[2];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Approve the new Project > for ITG Agency Project");
+$tb.start();
+	PrintBuyer_NavigateToNewProject($ProjRef);
+	PrintBuyer_ApproveAllBriefs();
+	Logout();
+	
+$tb.end();
+
+var $tc = _testcase("Step C", "ITG Agency Rejects All Briefs");
+$tc.start();
+	ITGAgency_NavigateToNewProject($ProjRef);
+	ITGAgency_RejectAllBriefs();
+	Logout();
+	
+$tc.end();
+
+var $td = _testcase("Step D", "Print Buyer submits back to project owner");
+$td.start();
+	PrintBuyer_NavigateToITGAgencyRejectedBriefs($ProjRef);
+	PrintBuyer_ResubmitsBriefsToProjectOwner();
+	Logout();
+$td.end();
+
+var $te = _testcase("Step E", "Client User Re-Submits All Briefs");
+$te.start();
+	ClientReSubmitsRejectedBriefs($ProjRef);
+	Logout();	
+$te.end();
+
+var $tf = _testcase("Step F", "Print Buyer Approve the new Project > for ITG Agency Project");
+$tf.start();
+	PrintBuyer_NavigateToNewProject($ProjRef);
+	PrintBuyer_ApproveAllBriefs();
+	Logout();
+	
+$tf.end();
+
+var $tg = _testcase("Step G", "ITG Agency Accepts All Briefs");
+$tg.start();
+	ITGAgency_NavigateToNewProject($ProjRef);
+	ITGAgency_AcceptAllBriefs();
+	Logout();
+	
+$tg.end();
+
+var $th = _testcase("Step H", "ITG Agency Awaiting artwork > submit artwork");
+$th.start();
+	ITGAgency_NavigateToAwaitingArtwork($ProjRef);
+	AddBriefArtwork($ArtworkName, $BriefRef);
+	AddBriefArtwork($ArtworkName1, $BriefRef1);
+	AddBriefArtwork($ArtworkName2, $BriefRef2);
+	ITGAgency_SubmitArtwork();
+	Logout();
+	
+$th.end();
+
+var $ti = _testcase("Step I", "PrintBuyer > ApproveArtwork");
+$ti.start();
+	PrintBuyer_NavigateToITGApproveArtwork($ProjRef);
+	ApproveArtwork();
+	Logout();
+$ti.end();
+
+var $tj = _testcase("Step J", "ClientUser > RejectsArtwork");
+$tj.start();
+	ClientUser_NavigatesToApproveArtwork($ProjRef);
+	RejectArtwork();
+	Logout();
+$tj.end();
+
+var $tk = _testcase("Step K", "PrintBuyer > ClientRejectedArtwork > Submit");
+$tk.start();
+	PrintBuyer_NavigateToClientRejectedArtwork($ProjRef);
+	SelectAllandSubmit();
+	Logout();
+$tk.end();
+
+var $tl = _testcase("Step L", "Agency User > New Amend Request");
+$tl.start();
+	ITGAgency_NavigateToNewAmendRequests($ProjRef);
+	SelectAllandSubmit();
+	Logout();
+$tl.end();
+
+var $t1 = _testcase("Step 1", "Login As ITG Agency User > Navigate to Workflow > Key Actions > Awaiting Artwork > Click on No. Of Briefs");
+$t1.start();
+
+	LoginAsAgencyUserandNavigateToKeyActions($TP_Username, $Password);
+	Common_NavigateToWorkflow();
+	_click($CMN_ICON_AWAITING_ARTWORK_AMENDS);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	_click(_span("View", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_ARTWORK)));
+	
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Click on the 'Feedback' button in the Artwork Amends, single page view page");
+$t2.start();
+		
+		
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Verify the buttons available in the Client feedback page");
+$t3.start();
+		
+$t3.end();
+
+var $t4 = _testcase("Step 4", "Click the 'Print' button ");
+$t4.start();
+	
+$t4.end();
+
+var $t5 = _testcase("Step 5", "Click the X{Close} button");
+$t5.start();
+	
+		
+$t5.end();
+

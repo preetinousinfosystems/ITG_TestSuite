@@ -1,0 +1,125 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahiagency";
+var $Password = "Pa55Word!!";
+
+var $Agency = "ITG";
+var $Printer = "ITG Print Management";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Approve the new Project > for ITG Agency Project");
+$tb.start();
+	PrintBuyer_NavigateToNewProject($ProjRef);
+	PrintBuyer_ApproveAllBriefs();
+	Logout();
+	
+$tb.end();
+
+var $t = _testcase("Step 1", "LoginAsAgencyUserNavigate to Workflow > Key Actions > Awaiting Agency briefs");
+$t.start();
+
+	LoginAsAgencyUserandNavigateToKeyActions($TP_Username, $Password);
+	Common_NavigateToWorkflow();
+	click_awaiting_agency_briefs_icon();	
+$t.end();
+
+var $t2 = _testcase("Step 2", "click on briefs link in Awaiting Agency briefs , project view ");
+$t2.start();
+	_assertEqual("Awaiting Agency Briefs", _getText($_HEADING_AWAITING_AGENCY_BRIEFS));
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Navigate back to Awaiting Agency briefs ; briefs view and reject all briefs ");
+$t3.start();
+		_click($_SPAN_BACK);
+		setHundredRecordsPerPage();
+		_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+		RejectAll_Assert();
+		Close_Comments_Rejectoverlay();
+		_click($_SPAN_OK_COMMENTS);
+$t3.end();	
+
+var $t4= _testcase("Step 4", "LoginAsAgencyUserNavigate to Workflow > Key Actions > Awaiting Agency briefs and reject the brief one at a time");
+$t4.start();
+	
+		_click(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_REJECT)));
+		_assertExists(_span("Add Comments"));
+		_assertExists(_span("History"));
+		Close_Comments_Rejectoverlay();
+		_click($_SPAN_OK_COMMENTS);
+$t4.end();
+	
+var $t5= _testcase("Step 5", "Try and Process the rejection of the brief");
+$t5.start();
+		_assertNotTrue($_CHECK_BOX_REJECT_ALL.checked);
+		_assertNotTrue($_CHECKBOX_AGENCYREJECTED.checked);
+	
+$t5.end();
+
+var $t6= _testcase("Step 6", "Verify the buttons in the 'Confirm Cancellation' Popup ");
+$t6.start();
+		_click(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_REJECT)));
+		Close_Comments_Rejectoverlay();
+		Assert_Buttons_ConfirmCancelpopup();		
+$t6.end();
+
+var $t7= _testcase("Step 7", "Click Ok");
+$t7.start();
+	_click($_SPAN_OK_COMMENTS);
+	_assertNotTrue(_isVisible($_DIV_REJECTED_COMMENTS_OVERLAY));
+	
+$t7.end();
+	
+var $t8 = _testcase("Step 8", "Click Cancel instead of Ok");
+$t8.start();	
+		Checkone_Rejectbox($BriefRef);
+		Close_Comments_Rejectoverlay();
+		_click($_SPAN_CANCEL_COMMENTS);
+		_assert(_isVisible($_DIV_REJECTED_COMMENTS_OVERLAY));
+	
+$t8.end();	
+
+var $t9= _testcase("Step 9", "Click Close instead of Ok");
+$t9.start();
+		Close_Comments_Rejectoverlay();
+		_click($_SPAN_CLOSE_DIV_COMMENT_CONFIRM);
+		_assert(_isVisible($_DIV_REJECTED_COMMENTS_OVERLAY));
+		Close_Comments_Rejectoverlay();
+		_click($_SPAN_OK_COMMENTS);
+		_assertNotTrue(_isVisible($_DIV_REJECTED_COMMENTS_OVERLAY));
+		Logout();
+	
+$t9.end();	
+	
+
+
+
+
+
+
+

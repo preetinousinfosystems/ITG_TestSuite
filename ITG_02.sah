@@ -1,0 +1,73 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahiagency";
+var $TP_Password = "Pa55Word!!";
+
+var $Agency = "ITG";
+var $Printer = "ITG Print Management";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $BriefReference = new Array();
+var $ProjRef1 = "";
+var $filepath = "";
+var $content = "";
+var $ProjRef2 = "ITG23455";
+
+var $t = _testcase("Step A", "Create a New Project and submit briefs");
+$t.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef1 = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$t.end();
+
+var $t0 = _testcase("Step B", "Approve the new Project > for ITG Agency Project");
+$t0.start();
+	PrintBuyer_NavigateToNewProject($ProjRef1);
+	PrintBuyer_ApproveAllBriefs();
+	Logout();
+	
+$t0.end();
+
+var $t1 = _testcase("Step 1", "Login as Agency User and navigate to Workflow > Search Projects for which the Agency User as Agency");
+$t1.start();
+
+	LoginAsAgencyUserandNavigateToKeyActions($TP_Username, $TP_Password);
+	Common_NavigateToWorkflow();
+	SearchProject($ProjRef1);
+	
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Click on the Excel link under the Export column in the result section > select the Export format: XML/HTML/CSV");
+$t2.start();
+
+	$filepath = ExportXMLFile();
+	$content = _readFile($filepath);
+	_log($content);
+	ExportHTMLFile();
+	ExportCSVFile();
+	//ExportPDFFile();
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Navigate to Workflow > Search Projects for which Agency User is NOT Agency");
+$t3.start();
+	
+	_assert(_isVisible($_LINK_WORKFLOW));
+	_click($_LINK_WORKFLOW);
+	SearchProject($ProjRef2);
+	Logout();
+	
+$t3.end();
+
+

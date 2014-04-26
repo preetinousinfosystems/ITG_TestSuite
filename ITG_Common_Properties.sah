@@ -1,0 +1,289 @@
+var $ITGApplicationURL = "http://staging2.mediacentrecore.com/";
+
+$_SPAN_NOTIFICATIONS = _span("Notifications");
+$_SPAN_ITG_AGENCY_REJECTED_BRIEFS = _span("ITG Agency Rejected Briefs");
+$_SPAN_AGENCY_REJECTED_BRIEFS = __span("Agency Rejected Briefs");
+$_SPAN_ITG_APPROVE_ARTWORK = _span("ITG Approve Artwork");
+$_SPAN_APPROVE_ARTWORK = _span("Approve Artwork");
+$_TEXTBOX_USERNAME = _textbox("Username");
+$_PASSWORD_PASSWORD = _password("Password");
+$_SUBMIT_LOGIN = _submit("Login");
+$_LINK_LOGOUT = _link("Log Out");
+$CMN_DIV_HOLDER_ICONS = _div("roundel-navigation-holder");
+$CMN_LINK_WORKFLOW_ROUNDICON = _link("Workflow", _in($CMN_DIV_HOLDER_ICONS));
+$CMN_LINK_KEYACTIONS = _link("Key Actions");
+
+$_LINK_SEARCH_PROJECT = _link("Search Project");
+$_TEXTBOX_PROJECTREFERENCE = _textbox("ProjectReference");
+$_BUTTON_SEARCH = _button("Search");
+$_SPAN_AWAITING_AGENCY_BRIEFS = _span("Awaiting Agency Briefs");
+$_DIV_PROJECT_VIEW_TABLE = _div("grdProjects");
+$_DIV_BRIEF_VIEW_TABLE = _div("grdBriefs");
+$_SPAN_PROJECT_REF = _span("Project Ref");
+$_LINK_BRIEF_REF = _link("Brief Ref", _near(_span("Project Ref")));
+$_LINK_BACK_BRIEFPAGE = _link("Back", _in(_div("Back")));
+
+
+/* AGENCY WORKFLOW */
+
+$CMN_ICON_AGENCY_BRIEFS = _link("roundel-icon horizontal awaiting-agency-briefs-icon");
+$CMN_ICON_AWAITING_ARTWORK = _link("roundel-icon horizontal awaiting-artwork-icon");
+$CMN_ICON_NEW_AMEND_REQUESTS = _link("roundel-icon horizontal new-amend-requests-icon");
+$CMN_ICON_AWAITING_ARTWORK_AMENDS = _link("roundel-icon horizontal awaiting-artwork-amends-icon");
+$CMN_ICON_AWAITING_ARTWORK_SUBMISSION = _link("roundel-icon horizontal awaiting-artwork-submission-icon");
+$CMN_ICON_AWAITING_PRINT_READY = _link("roundel-icon horizontal awaiting-print-ready-icon");
+$CMN_ICON_AGENCY_MODIFICATIONS = _link("roundel-icon horizontal agency-modifications-icon");
+
+/* CLIENT WORKFLOW */
+
+$_LINK_DRAFTS = _link("roundel-icon horizontal draft-icon");
+$_LINK_BRIEF_APPROVAL = _link("roundel-icon horizontal awaiting-brief-approval-icon");
+$_LINK_SAVED = _link("roundel-icon horizontal saved-icon");
+$_LINK_ITG_REJECTED_BRIEFS = _link("roundel-icon horizontal itg-rejected-briefs-icon");
+$_LINK_AGENCY_REJECTED_BRIEFS = _link("roundel-icon horizontal agency-rejected-briefs-icon");
+$_LINK_PRINTER_REJECTED_BRIEFS = _link("roundel-icon horizontal printer-rejected-briefs-icon");
+$_LINK_AWAITING_APPROVAL = _link("roundel-icon horizontal estimates-awaiting-approval-icon");
+$_LINK_APPROVE_ARTWORK = _link("roundel-icon horizontal approve-artwork-icon");
+$_LINK_REJECTED_ARTWORK = _link("roundel-icon horizontal rejected-artwork-icon");
+
+/* PRINT BUYER WORKFLOW */
+
+$_LINK_BRIEFS_TO_ACCEPT = _link("roundel-icon horizontal briefs-to-accept-icon");
+$_LINK_CLIENT_REJECTED_BRIEFS = _link("roundel-icon horizontal client-rejected-briefs-icon");
+$_LINK_AWAITING_RFQ = _link("roundel-icon horizontal awaiting-rfq-icon");
+$_LINK_RFQ_RESPONSES = _link("roundel-icon horizontal rfq-responses-icon");
+$_LINK_CLIENT_APPROVED_ESTIMATES = _link("roundel-icon horizontal client-approved-estimates-icon");
+$_LINK_CLIENT_DECLINED_ESTIMATES = _link("roundel-icon horizontal client-declined-estimates-icon");
+$_LINK_ITG_COST_AUTHORISATION = _link("roundel-icon horizontal itg-cost-authorisation-icon");
+$_LINK_ITG_APPROVE_ARTWORK = _link("roundel-icon horizontal itg-approve-artwork-icon");
+$_LINK_CLIENT_REJECTED_ARTWORK = _link("roundel-icon horizontal client-rejected-artwork-icon");
+$_LINK_ITG_AGENCY_MODIFICATIONS = _link("roundel-icon horizontal itg-agency-modifications-icon");
+$_LINK_ITG_PRINTER_MODIFICATIONS = _link("roundel-icon horizontal itg-printer-modifications-icon");
+$_LINK_BRIEFS_UNLOCKED = _link("roundel-icon horizontal briefs-unlocked-icon");
+$_LINK_ITG_REJECTED_ARTWORK = _link("roundel-icon horizontal itg-rejected-artwork-icon");
+
+/* PROJECT LEVEL TABLE*/
+
+$_HEADING_AGENCY_REJECTED_BRIEFS = _heading1("Agency Rejected Briefs");
+$_HEADING_ITG_AGENCY_REJECTED_BRIEFS = _heading1("ITG Agency Rejected Briefs");
+$_HEADING_ITG_REJECTED_BRIEFS = _heading1("ITG Rejected Briefs");
+$_HEADING_AWAITING_AGENCY_BRIEFS = _heading1("Awaiting Agency Briefs");
+$_HEADING_AWAITING_ARTWORK	 = _heading1("Awaiting Artwork");
+$_HEADING_AWAITING_ARTWORK_AMENDS = _heading1("Awaiting Artwork Amends");
+$_DIV_AWAITING_AGENCY_BRIEFS = _div("awaiting-agency-briefs");
+$_TABLEHEADER_PROJECT_REF =_tableHeader("Project Ref");
+$_TABLEHEADER_PROJECT_DESCRIPTION =_tableHeader("Project Description");
+$_TABLEHEADER_EVENT_NAME =_tableHeader("Event Name");
+$_TABLEHEADER_PROJECT_OWNER =_tableHeader("Project Owner");
+$_TABLEHEADER_ARTWORK_APPROVAL_DEADLINE = _tableHeader("Artwork Approval Deadline");
+$_TABLEHEADER_EVENT_START_DATE =_tableHeader("Event Start Date");
+$_TABLEHEADER_EVENT_END_DATE =_tableHeader("Event End Date");
+$_TABLEHEADER_ATTACHMENTS = _tableHeader("Attachments");
+$_TABLEHEADER_NO_OF_BRIEFS = _tableHeader("No. of Briefs");
+$_TABLEHEADER_CATEGORY = _tableHeader("Category");
+
+/* BRIEF VIEW TABLE */
+$_TABLEHEADER_BRIEF_REF = _tableHeader("Brief Ref");
+$_TABLEHEADER_BRIEF_DESCRIPTION = _tableHeader("Brief Description");
+$_TABLEHEADER_RESPOND_BY = _tableHeader("Respond By");
+$_TABLEHEADER_SITE =_tableHeader("Site");
+$_TABLEHEADER_PART = _tableHeader("Part");
+$_TABLEHEADER_BRIEF_TYPE = _tableHeader("Brief Type");
+$_LINK_TABLEHEADER_BRIEF = _tableHeader("Brief");
+$_TABLEHEADER_REJECT_COMMENTS = _tableHeader("Reject Comments");
+$_TABLEHEADER_SUBMIT_TO_PROJECT_OWNER = _tableHeader("Submit To Project Owner");
+$_TABLEHEADER_SUB_CATEGORY = _tableHeader("Sub Category");
+$_TABLEHEADER_ARTWORK_MATRIX_PRICE =_tableHeader("Artwork Matrix Price(£)");
+$_TABLEHEADER_REJECT = _tableHeader("Reject");
+$_TABLEHEADER_ACCEPT = _tableHeader("Accept");
+$_TABLEHEADER_PROJECT_ARTWORK_APPROVAL_DEADLINE = _span("Artwork Approval Deadline");
+
+/* AWAITING ARTWORK BRIEF VIEW */
+$_DIV_AWAITINGARTWORKBRIEFS = _div("gridAwaitingArtworkBriefs");
+$_TABLEHEADER_AWAITINGARTWORK_COST = _tableHeader("Cost(hrs)(£)", _in($_DIV_AWAITINGARTWORKBRIEFS));
+$_TABLEHEADER_COST_HRS = _tableHeader("Cost(hrs)(£)");
+$_TABLEHEADER_AWAITINGARTWORK_COSTTODATE =_span("Costs To Date (£)", _in($_DIV_AWAITINGARTWORKBRIEFS));
+$_TABLEHEADER_AWAITINGARTWORK_DEADLINE = _tableHeader("Artwork Approval Deadline", _in($_DIV_AWAITINGARTWORKBRIEFS));
+$_TABLEHEADER_AWAITINGARTWORK_REJECTCOMMENTS = _tableHeader("Reject Comments", _in($_DIV_AWAITINGARTWORKBRIEFS));
+$_TABLEHEADER_AWAITINGARTWORK_PRINTREADY = _tableHeader("Print Ready", _in($_DIV_AWAITINGARTWORKBRIEFS));
+$_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK = _tableHeader("Uploaded Artwork", _in($_DIV_AWAITINGARTWORKBRIEFS));
+$_TABLEHEADER_AWAITINGARTWORK_ARTWORK = _tableHeader("Artwork", _in($_DIV_AWAITINGARTWORKBRIEFS));
+$_TABLEHEADER_AWAITINGARTWORK_VIEW_PREVIOUS_VERSIONS = _tableHeader("View Previous Versions", _in($_DIV_AWAITINGARTWORKBRIEFS));
+$_TABLEHEADER_AWAITINGARTWORK_SELECT = _tableHeader("Select");
+$_CELL_ARTWORK_COSTS = _cell("Artwork Costs");
+$_CELL_ANNOTATION_COSTS = _cell("Annotation Costs");
+
+/* BRIEF VIEW TABLE FUNCTIONALITIES */
+
+$_CHECKBOX_ACCEPTALL = _checkbox("acceptall");
+$_BUTTON_SUBMIT = _submit("Submit");
+$_BRIEF_SUBMIT_CONFIRMATION = _div("overlayContent");
+$_BUTTON_ACCEPTALL= _checkbox("acceptall")
+$_ISACCEPTCHECKBOX_CHECKED = _checkbox("isagencyacceptedchkbx").checked
+var $Message = "Thank You Brief line(s) submitted successfully.";
+$_CHECKBOX_SINGLE_AGENCY = _checkbox("isagencyacceptedchkbx");
+$_CHECKBOX_ACCEPT =_checkbox("isagencyacceptedchkbx");
+
+$_CLICK_AWAITING_AGENCY_BRIEFS=_link("roundel-icon horizontal awaiting-agency-briefs-icon");
+
+$_LINK_BRIEF_REF = _link("Brief Ref");
+$_LINK_BRIEF_DESCRIPTION = _link("Brief Description");
+$_LINK_ARTWORK_APPROVAL_DEADLINE = _link("Artwork Approval Deadline");
+$_LINK_RESPOND_BY = _link("Respond By");
+$_LINK_ATTACHMENTS = _link("Attachments");
+$_TABLE_HEADER_ATTACHMENTS = _tableHeader("Attachments", _near($_LINK_ATTACHMENTS));
+$_SPAN_BRIEF = _span("Brief");
+$_LINK_ARTWORK_MATRIX_PRICE = _link("Artwork Matrix Price(£)");
+$_SPAN_REJECT = _span("Reject");
+$_CHECKBOX_GRDBRIEFS = _checkbox("grdBriefs");
+$_SPAN_ACCEPT = _span("Accept");
+$_CHECKBOX_GRDBRIEFS_1 = _checkbox("grdBriefs[1]");
+
+$_CHECKBOX_GRDBRIEFS = _checkbox("grdBriefs");
+$_DIV_COMMENTS_ADD_COMMENTS_ADD = _div("Comments Add Comments Add");
+$_SPAN_ADD_COMMENTS_ADD_COMMENTS_ADD = _span("Add Comments", _in(_div("Comments Add Comments Add")));
+
+$_SPAN_COMMENTS_ADD_COMMENTS_ADD = _span("Close", _near(_div("Comments Add Comments Add")));
+$_SUBMIT_COMMENTS_ADD_COMMENTS_ADD = _submit("Add", _in(_div("Comments Add Comments Add")));
+
+$_TEXTAREA_COMMENT = _textarea("Comment");
+$_SUBMIT_ADD = _submit("Add");
+$_DIV_COMMENTS = _div("Comments");
+$_SPAN_CLOSE_COMMENTS = _span("Close", _near($_DIV_COMMENTS));
+$_SUBMIT_ADD_COMMENTS = _submit("Add", _near($_DIV_COMMENTS));
+$_SPAN_OK_COMMENTS = _span("Ok", _in($_BRIEF_SUBMIT_CONFIRMATION));
+$_SPAN_CANCEL_COMMENTS = _span("Cancel", _in($_BRIEF_SUBMIT_CONFIRMATION));
+$_SPAN_CLOSE_DIV_COMMENT_CONFIRM = _span("Close", _near($_BRIEF_SUBMIT_CONFIRMATION));
+
+$_SUBMIT_SUBMIT = _submit("Submit");
+$_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON = _link("roundel-icon horizontal itg-agency-rejected-briefs-icon");
+var $TP_Briefno_Reject= "ITG114/1000000466"
+$_DIV_COMMENTS_ADD_COMMENTS_HISTORY_ADD = _div("Comments Add Comments History Add");
+$_SPAN_ADD_COMMENTS_ADD_COMMENTS_HISTORY_ADD = _span("Add Comments", _in(_div("Comments Add Comments History Add")));
+$_SPAN_COMMENTS_ADD_COMMENTS_HISTORY_ADD = _span("History", _in(_div("Comments Add Comments History Add")));
+$_SPAN_GENERIC_OVERLAY_CONTAINER_REJECTED_COMMENTS_CLEARFIX = _span("Close", _near(_div("generic-overlay-container rejected-comments clearfix")));
+$_SPAN_CLOSE = _span("Close");
+$_SPAN_BACK = _span("Back");
+
+$_CHECKBOX_REJECTALL = _checkbox("rejectall", _in($_TABLEHEADER_REJECT));
+$_DIV_ATTACHED_FILES = _div("attached-files");
+$_TABLEHEADER_EXPORT =_tableHeader("Export");
+$_SPAN_EXPORT_ICON = _span("main-sprite icon-25x25 excel-icon", _near($_TABLEHEADER_EXPORT));
+$_LINK_EXPORT = _link("Export");
+$_SPAN_SELECT_EXPORT = _span("CSV", _in(_span("CSVselect")));
+
+$_DIV_COMMENT_HISTORY_TAB_AREA = _div("tab-content-area clearfix hidden");
+
+/* CREATE PROJECT */ 
+
+var $Path = "C:\\Users\\preeticm\\sahi_pro\\userdata\\scripts\\FileUploads\\Asset_7__V4.pdf"; 
+var $urlBriefAttach = "http://staging2.mediacentrecore.com/ArtworkPrint/BriefOverlay/SaveDesktopFileAttachment";
+var $urlProjAttach = "http://staging2.mediacentrecore.com/ArtworkPrint/Project/SaveDesktopFileAttachment";
+var $urlArtworkUpload = "http://staging2.mediacentrecore.com/ArtworkPrint/AgencyKeyAction/SaveDesktopFileAttachment";
+
+$_LINK_CREATE_PROJECT = _link("Create Project");
+$_LABEL_EVENT_NAME = _label("Event Name");
+$_SPAN_SELECT_EVENT_NAME = _span("Select", _near($_LABEL_EVENT_NAME));
+$_SUBMIT_UPDATE = _submit("Update");
+$_TEXTBOX_PROJECTDESC = _textbox("ProjectDescription");
+$_LABEL_CATEGORY = _label("Category");
+$_SPAN_SELECT_CATEGORY = _span("Select", _near($_LABEL_CATEGORY));
+$_LABEL_SUBCATEGORY = _label("Sub Category");
+$_SPAN_SELECT_SUBCATEGORY = _span("Select", _near($_LABEL_SUBCATEGORY));
+$_SPAN_SAVE = _span("Save");
+$_LABEL_TRADING_FORMATS = _label("Trading Formats");
+$_BUTTON_SELECT_TRADING_FORMATS = _button("Select", _near($_LABEL_TRADING_FORMATS));
+$_LABEL_SITE = _label("Site");
+$_LABEL_PART = _label("Part");
+$_LABEL_ARTWORK_BRIEF_DETAILS = _label("Artwork Brief Details");
+$_TEXTAREA_ARTWORK_BRIEF_DETAILS = _textarea("ArtworkBriefDetails", _near($_LABEL_ARTWORK_BRIEF_DETAILS));
+$_LABEL_AGENCY =  _label("Agency");
+$_SPAN_AGENCY_FIELD = _span("ITG", _near($_LABEL_AGENCY));
+$_LABEL_PRINTER = _label("Printer");
+$_SPAN_PRINTER_FIELD = _span("ITG Print Management",_near($_LABEL_PRINTER));
+$_LABEL_DELIVERY_LOCATION = _label("Delivery Location");
+$_SPAN_SELECT_DELIVERY_LOCATION = _span("Select", _near($_LABEL_DELIVERY_LOCATION));
+$_LABEL_COLORS_FRONT = _label("Colours Front");
+$_SPAN_SELECT_COLORS_FRONT = _span("Select", _near($_LABEL_COLORS_FRONT));
+$_LABEL_COLORS_BACK = _label("Colours Back");
+$_SPAN_SELECT_COLORS_BACK = _span("select", _near($_LABEL_COLORS_BACK));
+$_LABEL_ALLOCATION = _label("Allocation");
+$_SPAN_EDIT_ALLOCATION = _span("Edit", _near($_LABEL_ALLOCATION));
+$_DIV_ALLOCATIONS =_div("allocations-overlay-accordion-menu");
+$_SUBMIT_SEARCH_DIV_ALLOCATIONS = _submit("Search", _in($_DIV_ALLOCATIONS));
+$_DIV_SEARCH_RESULTS = _div("search-results-list");
+$_SPAN_ADD_TO_LIST = _span("Add to List", _in($_DIV_SEARCH_RESULTS));
+$_SPAN_CONFIRM = _span("Confirm");
+$_BUTTON_SAVE_LINE = _button("Save Line");
+
+$_DIV_PROJECT_REF = _div("create-project-step1 disable-section-container");
+$_SPAN_COPY_DELETE = _span("Copy/Delete");
+$_SPAN_PLUS_BRIEFS_ADD = _span("main-sprite icon-25x25 add-icon", _near($_SPAN_COPY_DELETE));
+$_BUTTON_SUBMIT_BRIEFS = _button("Submit");
+
+$_TABLEHEADER_BRIEF_STATUS = _tableHeader("Brief Status");
+$_TEXTBOX_FILE_DESCRIPTION = _textbox("FileDescription");
+$_BUTTON_BRIEF_DESKTOP_FILE = _button("BriefDesktopFile");
+$_SPAN_DESKTOP_FILE = _span("Desktop File");
+$_FILE_DESKTOP_FILE = _file("desktopFile");
+$_FILE_DESKTOP_FILE_FOR_BRIEF = _file("desktopFileForBrief");
+$_BUTTON_APPROVE = _button("Approve");
+$_BUTTON_NOT_APPROVE = _button("Not Approved");
+$_TEXTAREA_REJECTION_COMMENTS = _textarea("rejectionComments");
+$_BUTTON_UPLOAD = _button("Upload");
+$_CHECK_BOX_REJECT_ALL = _checkbox("rejectall");
+$_CHECKBOX_AGENCYREJECTED = _checkbox("isagencyrejectedchkbx");
+$_DIV_REJECT_REASON_1 = _div("Incorrect Copy");
+$_DIV_REJECT_REASON_2 = _div("Incorrect Colours");
+$_DIV_REJECT_REASON_3 = _div("Incorrect Size");
+$_DIV_REJECT_REASON_4 = _div("Incorrect Resolution");
+$_DIV_THANKYOU_OVERLAY = _div("thankYouOverlay");
+$_SPAN_CLOSE_THANKYOU_OVERLAY = _span("Close", _near($_DIV_THANKYOU_OVERLAY));
+
+$_LINK_WORKFLOW = _link("Workflow");
+$_DIV_ATTACHMENT_OVERLAY_CONTAINER = _div("attachmentsOverlayContainer");
+$_DIV_REJECTED_COMMENTS_OVERLAY = _div("artworkPrintCommentsOverlay");
+$_DIV_NOTES_HISTORY = _div("notes-history");
+$_DIV_NO_BRIEF_SELECT_OVERLAY = _div("noBriefsSelectedOverlay");
+$_SPAN_CLOSE_BRIEF_SELECT_OVERLAY = _span("Close", _near($_DIV_NO_BRIEF_SELECT_OVERLAY));
+$_DIV_STEP_ONE = _div("Step One");
+$_DIV_STEP_TWO = _div("Step Two");
+$_DIV_BRIEF_DETAIL_OVERLAY = _div("briefDetailOverlay");
+$_DIV_ATTACHMENT_OVERLAY_CONTENT = _div("overlay-content");
+$_DIV_USER_DETAIL = _div("user-detail", _in($_DIV_ATTACHMENT_OVERLAY_CONTENT));
+$_SPAN_CLOSE_ATTACHMENTS = _span("Close", _near($_DIV_ATTACHMENT_OVERLAY_CONTAINER));
+var $colorCodeRed = "rgb(255, 0, 0)";
+var $colorCodeBlack = "rgb(0, 0, 0)";
+$_TEXTAREA_FILE_DESCRIPTION = _textarea("FileDescription");
+$_ICON_ARTWORK_UPLOADED = _span("main-sprite icon-20x20 pdf-dashboard-icon");
+$_DIV_UPLOAD_ARTWORK = _div("Browsedrop files here to upload");
+$_SPAN_ARTWORK_UPLOAD_CLOSE = _span("Close", _near($_DIV_UPLOAD_ARTWORK));
+$_SPAN_PRINTER_BRIEFS_TO_ACCEPT = _span("Printer Briefs To Accept");
+
+$_BUTTON_CLOSE = _span("k-icon k-i-close", _near(_div("overlayContent")));
+$_BUTTON_CANCEL = _span("Cancel", _in(_div("overlayContent")));
+$_BUTTON_OK  = _span("Ok", _in(_div("overlayContent")));
+$_DIV_BRIEF_COSTS_OVERLAY = _div("BriefCostCodeOverlay");
+$_FIELD_ARTWORK_COSTS = _cell("Artwork Costs", _near(_span("Total costs", _in($_DIV_BRIEF_COSTS_OVERLAY ))));
+$_FIELD_ANNOTATION_COST = _cell("Annotation Costs", _near(_span("Total costs", _in($_DIV_BRIEF_COSTS_OVERLAY ))));
+$_FIELD_TOTAL_COST = _cell("Total Cost", _near(_span("Total costs", _in($_DIV_BRIEF_COSTS_OVERLAY ))));
+$_LINK_TOTAL_COSTS = _link("Total costs");
+$_SPAN_VERSION_COSTS = _span("Version Costs");
+$_FIELD_TOTAL_COST_VERSIONCOST =_cell("Total Costs", _near(_span("Version Costs", _in($_DIV_BRIEF_COSTS_OVERLAY ))));
+$_FIELD_VERSION_VERSIONCOST = _cell("Version 1", _near(_span("Version Costs", _in($_DIV_BRIEF_COSTS_OVERLAY ))));
+$_HEADER_BRIEFREFNO = _div("header header2[1]");
+$_HEADER_CLIENTVERSIONNUM = _span("Client Version Number Description");
+$_HEADER_TOTAL_COST = _tableHeader("Total Cost[1]");
+$CLOSE_BUTTON_COSTOVERLAY = _span("Close", _near(_div("BriefCostCodeOverlay")));
+//$BUTTON_SUBMIT_AWAITINGARTWORK = _submit("SubmitButtonType");
+$POPUP_VALIDATIONERRORS_MESSAGE = _paragraph("/You haven't selected any briefs/");
+$_DIV_POPUP_VALIDATIONERRORS = _div("noBriefsSelectedOverlay");
+//$_LINK_WINDOW_ACTION = _link("k-window-action k-link");
+
+$_DIV_BRIEF_DESKTOP_FILE_OVERLAY = _div("BriefDesktopFileOverlay");
+$_CHECKBOX_SELECTALL_ARTWORK = _checkbox("gridAwaitingArtworkBriefs", _in($_TABLEHEADER_AWAITINGARTWORK_SELECT));
+$_CHECKBOX_SELECTALL_PRINTREADY = _checkbox("gridAwaitingArtworkBriefs", _in($_TABLEHEADER_AWAITINGARTWORK_PRINTREADY));
+$_TABLEHEADER_ARTWORK = _tableHeader("Artwork");
+
+$_CHECKBOX_SELECTALL_BRIEFS = _checkbox("isSelectedHeader");
+$_DIV_BRIEFVIEW_ARTWORKOVERLAY = _div("BriefViewArtworkOverlayContainer");

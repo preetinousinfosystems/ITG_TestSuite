@@ -1,0 +1,229 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahiprintbuyer";
+var $TP_Password = "Pa55Word!!";
+
+var $Agency = "ITG";
+var $Printer = "ITG Print Management";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Approve the new Project > for ITG Agency Project");
+$tb.start();
+	PrintBuyer_NavigateToNewProject($ProjRef);
+	PrintBuyer_ApproveAllBriefs();
+	Logout();
+	
+$tb.end();
+
+var $tc = _testcase("Step C", "ITG Agency Rejects All Briefs");
+$tc.start();
+	ITGAgency_NavigateToNewProject($ProjRef);
+	ITGAgency_RejectAllBriefs();
+	Logout();
+	
+$tc.end();
+
+
+var $t1 = _testcase("Step 1", "Login as Print Buyer and navigate to Workflow > Key Actions > ITG Agency Rejected Briefs");
+$t1.start();
+
+	LoginAsPrintBuyerandNavigateToKeyActions($TP_Username, $TP_Password);
+	Common_NavigateToPrintBuyerWorkflow();
+	_click($_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON);
+	Assert_TableFieldsITGAgencyRejectBriefsProjectLevel();
+
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Check Read Only fields in 'ITG Agency Reject Briefs Project Level'");
+$t2.start();
+
+	Assert_ReadOnlyFieldsOfTable("Project Description");
+	Assert_ReadOnlyFieldsOfTable("Event Name");
+	Assert_ReadOnlyFieldsOfTable("Project Owner");
+	Assert_ReadOnlyFieldsOfTable("Category");
+	Assert_ReadOnlyFieldsOfTable("Event Start Date");
+	Assert_ReadOnlyFieldsOfTable("Event End Date");
+
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Check available links in 'ITG Agency Reject Briefs Project Level'");
+$t3.start();
+
+	Assert_LinkFieldsOfTable("Project Ref");
+	Assert_LinkFieldsOfTable("No. of Briefs");
+	
+$t3.end();
+
+var $t4 = _testcase("Step 4", "Click on the 'Project Ref' hyperlink");
+$t4.start();
+		setHundredRecordsPerPage();
+		_click(_link($ProjRef));
+		_assertEqual("ITG Agency Rejected Briefs", _getText($_HEADING_ITG_AGENCY_REJECTED_BRIEFS));
+		_click($_SPAN_BACK);
+	
+$t4.end();
+
+var $t5 = _testcase("Step 5", "Click on the Briefs hyperlink");
+$t5.start();
+	setHundredRecordsPerPage();
+		_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+		_assertEqual("ITG Agency Rejected Briefs", _getText($_HEADING_ITG_AGENCY_REJECTED_BRIEFS));
+	
+$t5.end();
+
+var $t6 = _testcase("Step 6", "Check the available Project fields in the Project fields of 'ITG Agency Rejected Brief details page'");
+$t6.start();
+
+		Assert_TableFieldsITGAgencyRejectBriefsProjectLevel();
+	
+$t6.end();
+
+var $t7 = _testcase("Step 7", "Check the available Brief fields in the Briefs fields of' ITG Agency Rejected Brief details page'");
+$t7.start();
+
+		Assert_ITGAgencyRejectBriefs_BriefTableFields();
+		Assert_ReadOnlyFieldsOfTable("Brief Description");
+		Assert_ReadOnlyFieldsOfTable("Artwork Approval Deadline");
+		Assert_ReadOnlyFieldsOfTable("Respond By");
+		Assert_ReadOnlyFieldsOfTable("Site");
+		Assert_ReadOnlyFieldsOfTable("Part");
+		Assert_ReadOnlyFieldsOfTable("Brief Type");
+	
+	
+$t7.end();
+
+var $t8 = _testcase("Step 8", "Check available Tick box  in the Briefs fields of 'ITG Agency Rejected Brief details page'");
+$t8.start();
+
+	Assert_CheckBoxFieldsOfTable("Submit To Project Owner");
+	
+$t8.end();
+
+var $t9 = _testcase("Step 9", "Check the available Links  in the 'ITG Agency Rejected Brief details page'");
+$t9.start();
+
+	Assert_LinkFieldsOfTable("Project Ref");
+	Assert_LinkFieldsOfTable("Brief Ref");
+	Assert_LinkFieldsOfTable("Attachments");
+	Assert_LinkFieldsOfTable("Brief");
+	Assert_LinkFieldsOfTable("Reject Comments");
+	
+$t9.end();
+
+var $t10 = _testcase("Step 10", "Click on 'Project Ref ' Link");
+$t10.start();
+		
+		_click(_link($ProjRef));
+		_assert(_isVisible($_DIV_STEP_ONE));
+		_assert(_isVisible($_DIV_STEP_TWO));
+	
+$t10.end();
+
+var $t11 = _testcase("Step 11", "Navigate back to 'ITG Agency Rejected Brief details page' and Click on the 'Attachment' link");
+$t11.start();
+	_click($_LINK_WORKFLOW);
+	_click($_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON);
+	setHundredRecordsPerPage();
+	_click(_link($ProjRef));
+	_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_ATTACHMENTS)));
+	_assertEqual("Attachments", _getText(_heading2("Attachments", _in($_DIV_ATTACHMENT_OVERLAY_CONTAINER))));
+	_click($_SPAN_CLOSE);
+$t11.end(); 
+
+var $t12 = _testcase("Step 12", "Navigate back to 'ITG Agency Rejected Brief details page' and Click on the 'Comments' link");
+$t12.start();
+	_click($_LINK_WORKFLOW);
+	_click($_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON);
+	setHundredRecordsPerPage();
+	_click(_link($ProjRef));
+	_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_REJECT_COMMENTS)));
+	_assertEqual("Comments", _getText(_heading2("Comments", _in($_DIV_REJECTED_COMMENTS_OVERLAY))));
+	_click($_SPAN_CLOSE);
+$t12.end();
+
+var $t13 = _testcase("Step 13", "Navigate back to 'ITG Agency Rejected Brief details page' and Click on the 'Brief' link");
+$t13.start();
+	_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_LINK_TABLEHEADER_BRIEF)));
+	_assertEqual("Brief Details", _getText(_heading2("Brief Details", _in($_DIV_BRIEF_DETAIL_OVERLAY))));
+	_click($_SPAN_CLOSE);
+$t13.end();
+
+var $t14 = _testcase("Step 14", "Navigate back to 'ITG Agency Rejected Brief details page' and Click on the 'Brief Ref' link");
+$t14.start();
+	_click(_link($BriefRef));
+	_assert(_isVisible($_DIV_STEP_ONE));
+	_assert(_isVisible($_DIV_STEP_TWO));
+	_click($_LINK_WORKFLOW);
+	_click($_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON);
+	setHundredRecordsPerPage()
+	_click(_link($ProjRef));
+	
+$t14.end();
+
+var $t15 = _testcase("Step 15", "Click the 'Back' button  in the 'ITG Agency Rejected Brief details page'");
+$t15.start();
+	_click($_SPAN_BACK);
+	_assertEqual("ITG Agency Rejected Briefs", _getText($_HEADING_ITG_AGENCY_REJECTED_BRIEFS));
+$t15.end();
+
+var $t16 = _testcase("Step 16", "Navigate back to 'ITG Agency Rejected Brief details page'-> Select some briefs lines and click the 'Back' button -> Go back to  'ITG Agency Rejected Brief details page'");
+$t16.start();
+	setHundredRecordsPerPage();
+	_click(_link($ProjRef));
+	Click_BriefCheckBox($BriefRef, "Submit To Project Owner");
+	AddTextComment("TestComment");
+	_click($_SPAN_BACK);
+	setHundredRecordsPerPage();
+	_click(_link($ProjRef));
+	_assertNotTrue(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_SUBMIT_TO_PROJECT_OWNER)).checked);
+$t16.end();
+
+var $t18 = _testcase("Step 18", "Click 'X' icon");
+$t18.start();
+	Click_BriefCheckBox($BriefRef, "Submit To Project Owner");
+	_click($_SPAN_CLOSE);
+	_click($_SPAN_OK_COMMENTS);
+	_assertNotTrue(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_SUBMIT_TO_PROJECT_OWNER)).checked);
+	_assertEqual("ITG Agency Rejected Briefs", _getText($_HEADING_ITG_AGENCY_REJECTED_BRIEFS));
+$t18.end();
+
+var $t17 = _testcase("Step 17", "Select some briefs lines by Clicking the  'submit to project owner' Tick Box");
+$t17.start();
+	Click_BriefCheckBox($BriefRef, "Submit To Project Owner");
+	AddTextComment("TestComment");
+	_click($_BUTTON_SUBMIT);
+	_assertContainsText("Thank You", _div("Thank You", _in($_BRIEF_SUBMIT_CONFIRMATION)));
+	_assertContainsText("Brief line(s) submitted successfully.", _div("Brief line(s) submitted successfully.", _in($_BRIEF_SUBMIT_CONFIRMATION)));
+	_click($_SPAN_CLOSE);
+	_assertNotExists(_link($BriefRef));
+	_assertNotTrue(_isVisible(_link($BriefRef)));
+	Logout();
+$t17.end();
+
+
+
+

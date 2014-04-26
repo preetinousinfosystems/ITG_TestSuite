@@ -1,0 +1,880 @@
+_include("ITG_Common_Properties.sah");
+_include("ITG_CreateProject_Utils.sah");
+
+function onScriptError($e){
+  _focusWindow();
+  _takeScreenShot();
+  
+}
+
+function onScriptFailure($e){
+  _focusWindow();
+  _takeScreenShot();
+  
+}
+
+function LoginAsAgencyUserandNavigateToKeyActions($Username, $Password){
+	_setValue($_TEXTBOX_USERNAME, $Username);
+	_setValue($_PASSWORD_PASSWORD, $Password);
+	_click($_SUBMIT_LOGIN);
+	_assert(_isVisible($_LINK_LOGOUT));
+}
+
+function LoginAsoutsideAgencyUserandNavigateToKeyActions($out_Username, $out_Password){
+	_setValue($_TEXTBOX_USERNAME, $out_Username);
+	_setValue($_PASSWORD_PASSWORD, $out_Password);
+	_click($_SUBMIT_LOGIN);
+	_assert(_isVisible($_LINK_LOGOUT));
+}
+
+function LoginAsClientUserandNavigateToKeyActions($client_Username, $client_Password){
+	_setValue($_TEXTBOX_USERNAME, $client_Username);
+	_setValue($_PASSWORD_PASSWORD, $client_Password);
+	_click($_SUBMIT_LOGIN);
+	_assert(_isVisible($_LINK_LOGOUT));
+}
+
+function LoginAsPrintBuyerandNavigateToKeyActions($PB_Username, $PB_Password){
+	_setValue($_TEXTBOX_USERNAME, $PB_Username);
+	_setValue($_PASSWORD_PASSWORD, $PB_Password);
+	_click($_SUBMIT_LOGIN);
+	_assert(_isVisible($_LINK_LOGOUT));
+}
+
+function Logout(){
+	_click($_LINK_LOGOUT);
+}
+
+function Common_NavigateToWorkflow()
+{
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_assertExists($CMN_LINK_KEYACTIONS);
+	_assert(_isVisible($CMN_ICON_AGENCY_BRIEFS));
+	_assert(_isVisible($CMN_ICON_AWAITING_ARTWORK));
+	_assert(_isVisible($CMN_ICON_NEW_AMEND_REQUESTS));
+	_assert(_isVisible($CMN_ICON_AWAITING_ARTWORK_AMENDS));
+	_assert(_isVisible($CMN_ICON_AWAITING_ARTWORK_SUBMISSION));
+	_assert(_isVisible($CMN_ICON_AWAITING_PRINT_READY));
+	_assert(_isVisible($CMN_ICON_AGENCY_MODIFICATIONS));
+}
+
+function Common_NavigateToClientWorkflow()
+{
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_assertExists($CMN_LINK_KEYACTIONS);
+	_assert(_isVisible($_LINK_DRAFTS));
+	_assert(_isVisible($_LINK_BRIEF_APPROVAL));
+	_assert(_isVisible($_LINK_SAVED));
+	_assert(_isVisible($_LINK_ITG_REJECTED_BRIEFS));
+	_assert(_isVisible($_LINK_AGENCY_REJECTED_BRIEFS));
+	_assert(_isVisible($_LINK_PRINTER_REJECTED_BRIEFS));
+	_assert(_isVisible($_LINK_AWAITING_APPROVAL));
+	_assert(_isVisible($_LINK_APPROVE_ARTWORK));
+	_assert(_isVisible($_LINK_REJECTED_ARTWORK));
+}
+
+function Common_NavigateToPrintBuyerWorkflow()
+{
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_assertExists($CMN_LINK_KEYACTIONS);
+	_assert(_isVisible($_LINK_DRAFTS));
+	_assert(_isVisible($_LINK_BRIEFS_TO_ACCEPT));
+	_assert(_isVisible($_LINK_SAVED));
+	_assert(_isVisible($_LINK_CLIENT_REJECTED_BRIEFS));
+	_assert(_isVisible($_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON));
+	_assert(_isVisible($_LINK_AWAITING_RFQ));
+	_assert(_isVisible($_LINK_RFQ_RESPONSES));
+	_assert(_isVisible($_LINK_CLIENT_APPROVED_ESTIMATES));
+	//_assert(_isVisible($_LINK_CLIENT_DECLINED_ESTIMATES));
+	_assert(_isVisible($_LINK_ITG_COST_AUTHORISATION ));
+	_assert(_isVisible($_LINK_ITG_APPROVE_ARTWORK));
+	_assert(_isVisible($_LINK_CLIENT_REJECTED_ARTWORK));
+	_assert(_isVisible($_LINK_ITG_AGENCY_MODIFICATIONS ));
+	_assert(_isVisible($_LINK_ITG_PRINTER_MODIFICATIONS));
+	_assert(_isVisible($_LINK_BRIEFS_UNLOCKED));
+	_assert(_isVisible($_LINK_ITG_REJECTED_ARTWORK));
+}
+
+function NavigatetoNotificationsandAssertIcons(){
+	_click($_SPAN_NOTIFICATIONS);
+	_assert(_isVisible($_SPAN_ITG_AGENCY_REJECTED_BRIEFS));
+	_assert(_isVisible($_SPAN_ITG_APPROVE_ARTWORK));	
+}
+
+function click_awaiting_agency_briefs_icon()
+{ _click($_CLICK_AWAITING_AGENCY_BRIEFS);
+}
+
+function NavigatetoNotificationsandAssertIcons_outsideagency()
+{
+	_click($_SPAN_NOTIFICATIONS);
+	_assert(_isVisible($_SPAN_AGENCY_REJECTED_BRIEFS));
+	_assert(_isVisible($_SPAN_APPROVE_ARTWORK));
+	}
+function assertfields_Awaiting_Agency_Briefs_Projectview()
+
+{
+	_assert(_isVisible($_TABLEHEADER_PROJECT_REF));	
+	_assert(_isVisible($_TABLEHEADER_PROJECT_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_EVENT_NAME));	
+	_assert(_isVisible($_TABLEHEADER_PROJECT_OWNER));	
+	_assert(_isVisible($_TABLEHEADER_ARTWORK_APPROVAL_DEADLINE));	
+	_assert(_isVisible($_TABLEHEADER_EVENT_START_DATE));	
+	_assert(_isVisible($_TABLEHEADER_EVENT_END_DATE));	
+	//_assert(_isVisible($_TABLEHEADER_ATTACHMENTS));	
+	_assert(_isVisible($_TABLEHEADER_NO_OF_BRIEFS));
+	
+}
+
+	function Assertfields_briefsviewpage()
+
+{
+	_assertExists($_LINK_BRIEF_REF);
+	_assertExists($_LINK_BRIEF_DESCRIPTION);
+	_assertExists($_LINK_ARTWORK_APPROVAL_DEADLINE);
+	_assertExists($_LINK_RESPOND_BY);
+	_assertExists($_TABLEHEADER_ATTACHMENTS);
+	_assertExists($_SPAN_BRIEF);
+	_assertExists($_LINK_ARTWORK_MATRIX_PRICE);
+	_assertExists($_SPAN_REJECT);
+	_assertExists($_SPAN_ACCEPT);
+}
+	
+function AssertTickBox_briefsviewpage()
+{
+	_assertExists($_SPAN_REJECT);
+	_assertExists($_CHECKBOX_GRDBRIEFS);
+	_assertExists($_SPAN_ACCEPT);
+	_assertExists($_CHECKBOX_GRDBRIEFS_1);
+
+	}
+
+function Assertlinks_briefsviewpage()
+	
+{
+	_assertExists(_link("1", _near($_LINK_ATTACHMENTS)));
+	_click(_checkbox("Briefs[0].IsAgencyRejected"));
+	_assert(_isVisible(_div("Close Confirm Cancellation Validation Errors Thank You Ok Cancel Comments Add Comments History Add")));
+	_click(_span("Close", _near(_heading2("Comments"))));
+	_click(_link("Ok[4]"));
+	_assertExists(_span("main-sprite icon-20x20 search-icon"));
+	_click(_span("main-sprite icon-20x20 search-icon"));
+	_assertExists(_div("k-widget k-window"));
+	_click(_span("Close", _near(_div("Brief Details"))));
+	
+}
+
+function Assertbuttons_briefsviewpage()
+	
+{
+	_assert(_isVisible(_span("Back", _in(_div("box-inner-content")))));
+	_assert(_isVisible(_submit("Submit", _in(_div(18)))));
+	
+}
+
+function Common_BriefViewDetails($ProjectRef, $Arg1)
+{
+	_assertExists(_cell($ProjectRef, _in($_DIV_PROJECT_VIEW_TABLE)));
+	_assert(_isVisible(_cell($ProjectRef, _in($_DIV_PROJECT_VIEW_TABLE))));
+	_click(_link("NoOfBriefs", _in(_cell($Arg1, _in(_div("grdProjects"))))));
+	_assertExists($_SPAN_PROJECT_REF);
+	_assert(_isVisible($_SPAN_PROJECT_REF));
+	_assertExists(_cell($ProjectRef, _near($_SPAN_PROJECT_REF)));
+	_assert(_isVisible(_cell($ProjectRef, _near($_SPAN_PROJECT_REF))));
+	_assertExists($_LINK_BRIEF_REF);
+	_assert(_isVisible($_LINK_BRIEF_REF));
+	_assertExists(_cell("/ITG.*/", _in(_div("grdBriefs"))));
+	_assert(_isVisible(_cell("/ITG.*/", _in(_div("grdBriefs")))));	
+}
+function Common_ClickBackButton() 
+{
+	_click($_LINK_BACK_BRIEFPAGE);
+}
+
+function Common_AssertProjectViewPage($ProjectRef)
+{
+	_assertExists(_cell($ProjectRef, _in($_DIV_PROJECT_VIEW_TABLE)));
+	_assert(_isVisible(_cell($ProjectRef, _in($_DIV_PROJECT_VIEW_TABLE))));
+	_assertContainsText("$ProjectRef", _cell("$ProjectRef", _in($_DIV_PROJECT_VIEW_TABLE)));
+}
+
+function Common_ClickAcceptAllBriefCheckbox()
+{
+	_assertNotTrue($_CHECKBOX_ACCEPTALL.checked);
+	_click($_CHECKBOX_ACCEPTALL);
+	_assert($_CHECKBOX_ACCEPTALL.checked);
+}
+
+function SubmitBriefandConfirmationMessage($Message)
+{
+	_click($_BUTTON_SUBMIT);
+	_assertExists($_BRIEF_SUBMIT_CONFIRMATION);
+	_assert(_isVisible($_BRIEF_SUBMIT_CONFIRMATION));
+	_assertContainsText($Message, $_BRIEF_SUBMIT_CONFIRMATION);
+	_click($_SPAN_CLOSE);
+}
+
+
+function Common_AwaitingAgencyBriefs($ProjectRef){
+	_click($_SPAN_AWAITING_AGENCY_BRIEFS);
+	Common_AssertProjectViewPage($ProjectRef);
+	
+}
+
+function Assert_Awaiting_Agency_Briefs_Projectviewpage()
+
+{
+	  _assert(_isVisible($_DIV_AWAITING_AGENCY_BRIEFS));
+	
+}
+
+function AcceptAll_Assert()
+{
+_click($_BUTTON_ACCEPTALL);
+_assertTrue($_ISACCEPTCHECKBOX_CHECKED);
+}
+
+function SubmitBriefandConfirmationMessage($Message){
+		
+	_click($_BUTTON_SUBMIT);
+	_assertExists($_BRIEF_SUBMIT_CONFIRMATION);
+	_assert(_isVisible($_BRIEF_SUBMIT_CONFIRMATION));
+}
+
+function click_close()
+	{
+	_click($_SPAN_CLOSE);
+}
+
+function click_individual_checkbox()
+
+{
+_click(_checkbox("isagencyacceptedchkbx", _near(_cell("ITG114/1000000460"))));
+
+}
+
+function AssertTableProjectLevel() 
+{
+	_assert(_isVisible($_TABLEHEADER_PROJECT_REF));
+	_assert(_isVisible($_TABLEHEADER_PROJECT_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_EVENT_NAME));
+	_assert(_isVisible($_TABLEHEADER_PROJECT_OWNER));
+	_assert(_isVisible($_TABLEHEADER_CATEGORY));
+	_assert(_isVisible($_TABLEHEADER_EVENT_START_DATE));
+	_assert(_isVisible($_TABLEHEADER_EVENT_END_DATE));
+	_assert(_isVisible($_TABLEHEADER_NO_OF_BRIEFS));
+}
+
+function AssertTableProjectLevel_AwaitingArtwork() 
+{
+	_assert(_isVisible($_TABLEHEADER_PROJECT_REF));
+	_assert(_isVisible($_TABLEHEADER_PROJECT_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_EVENT_NAME));
+	_assert(_isVisible($_TABLEHEADER_PROJECT_OWNER));
+	_assert(_isVisible($_TABLEHEADER_ARTWORK_APPROVAL_DEADLINE));
+	_assert(_isVisible($_TABLEHEADER_EVENT_START_DATE));
+	_assert(_isVisible($_TABLEHEADER_EVENT_END_DATE));
+	//_assert(_isVisible($_TABLEHEADER_ATTACHMENTS));
+	_assert(_isVisible($_TABLEHEADER_NO_OF_BRIEFS));
+}
+
+function AssertTableProjectLevel_AwaitingArtworkAmends() 
+{
+	_assert(_isVisible($_TABLEHEADER_PROJECT_REF));
+	_assert(_isVisible($_TABLEHEADER_PROJECT_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_EVENT_NAME));
+	_assert(_isVisible($_TABLEHEADER_PROJECT_OWNER));
+	_assert(_isVisible($_TABLEHEADER_ARTWORK_APPROVAL_DEADLINE));
+	_assert(_isVisible($_TABLEHEADER_EVENT_START_DATE));
+	_assert(_isVisible($_TABLEHEADER_EVENT_END_DATE));
+	_assert(_isVisible($_TABLEHEADER_NO_OF_BRIEFS));
+}
+
+function Assert_TableFieldsAgencyRejectBriefsProjectLevel() 
+{
+	_assert(_isVisible($_HEADING_AGENCY_REJECTED_BRIEFS));
+	AssertTableProjectLevel();
+}
+
+function Assert_AgencyRejectBriefs_BriefTableFields() 
+{
+	_assert(_isVisible($_TABLEHEADER_BRIEF_REF));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_ARTWORK_APPROVAL_DEADLINE));
+	_assert(_isVisible($_TABLEHEADER_RESPOND_BY));
+	_assert(_isVisible($_TABLEHEADER_SITE));
+	_assert(_isVisible($_TABLEHEADER_PART));
+	_assert(_isVisible($_TABLEHEADER_ATTACHMENTS));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_TYPE));
+	_assert(_isVisible($_LINK_TABLEHEADER_BRIEF));
+	_assert(_isVisible($_TABLEHEADER_REJECT_COMMENTS));		
+}
+
+function Assert_TableFieldsITGAgencyRejectBriefsProjectLevel() 
+{
+	_assert(_isVisible($_HEADING_ITG_AGENCY_REJECTED_BRIEFS));
+	AssertTableProjectLevel();
+}
+
+function Assert_ITGAgencyRejectBriefs_BriefTableFields() 
+{
+	_assert(_isVisible($_TABLEHEADER_BRIEF_REF));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_ARTWORK_APPROVAL_DEADLINE));
+	_assert(_isVisible($_TABLEHEADER_RESPOND_BY));
+	_assert(_isVisible($_TABLEHEADER_SITE));
+	_assert(_isVisible($_TABLEHEADER_PART));
+	_assert(_isVisible($_TABLEHEADER_ATTACHMENTS));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_TYPE));
+	_assert(_isVisible($_LINK_TABLEHEADER_BRIEF));
+	_assert(_isVisible($_TABLEHEADER_SUBMIT_TO_PROJECT_OWNER));
+	_assert(_isVisible($_TABLEHEADER_REJECT_COMMENTS));		
+}
+
+function Assert_TableFieldsITGRejectBriefsProjectLevel() 
+{
+	_assert(_isVisible($_HEADING_ITG_REJECTED_BRIEFS));
+	AssertTableProjectLevel();
+}
+
+function Assert_ITGRejectBriefs_BriefTableFields() 
+{
+	_assert(_isVisible($_TABLEHEADER_BRIEF_REF));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_SITE));
+	_assert(_isVisible($_TABLEHEADER_PART));
+	_assert(_isVisible($_TABLEHEADER_CATEGORY));
+	_assert(_isVisible($_TABLEHEADER_SUB_CATEGORY));
+	_assert(_isVisible($_TABLEHEADER_REJECT_COMMENTS));	
+	_assert(_isVisible($_TABLEHEADER_PROJECT_OWNER));
+	_assert(_isVisible($_TABLEHEADER_EVENT_NAME));		
+}
+
+function Assert_AwaitingAgencyBriefs_BriefTableFields()
+ {
+	_assert(_isVisible($_TABLEHEADER_BRIEF_REF));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_ARTWORK_APPROVAL_DEADLINE));
+	_assert(_isVisible($_TABLEHEADER_RESPOND_BY));
+	_assert(_isVisible($_TABLEHEADER_ATTACHMENTS));
+	_assert(_isVisible($_LINK_TABLEHEADER_BRIEF));
+	_assert(_isVisible($_TABLEHEADER_ARTWORK_MATRIX_PRICE));	
+	_assert(_isVisible($_TABLEHEADER_REJECT));	
+	_assert(_isVisible($_TABLEHEADER_ACCEPT));	
+}
+
+function Assert_AwaitingArtwork_BriefTableFields()
+ {
+	_assert(_isVisible($_TABLEHEADER_BRIEF_REF));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_TYPE));
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_DEADLINE));
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_COST));
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_COSTTODATE));
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_REJECTCOMMENTS));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_PRINTREADY));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_ARTWORK));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_SELECT));	
+}
+
+function Assert_AwaitingArtworkAmends_BriefTableFields()
+ {
+	_assert(_isVisible($_TABLEHEADER_BRIEF_REF));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_DESCRIPTION));
+	_assert(_isVisible($_TABLEHEADER_BRIEF_TYPE));
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_DEADLINE));
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_COST));
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_COSTTODATE));
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_REJECTCOMMENTS));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_PRINTREADY));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_ARTWORK));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_VIEW_PREVIOUS_VERSIONS));	
+	_assert(_isVisible($_TABLEHEADER_AWAITINGARTWORK_SELECT));	
+}
+
+
+function Assert_ReadOnlyFieldsOfTable($Table_Column)
+{
+var $tablerows = _collect("_cell", "/.*/", _under(_tableHeader($Table_Column)));
+for (var $i=0; $i<$tablerows.length; $i++) {
+  _assertNotExists(_link("/.*/", _in($tablerows[$i])));
+}						  
+}
+
+function Assert_LinkFieldsOfTable($Table_Column)
+{
+var $tablerows = _collect("_cell", "/.*/", _under(_tableHeader($Table_Column)));
+for (var $i=0; $i<$tablerows.length; $i++) {
+if(_exists(_link("/.*/", _in($tablerows[$i]))))
+{
+	_assertExists(_link("/.*/", _in($tablerows[$i])));
+}
+else {
+	_assertNotExists(_link("/.*/", _in($tablerows[$i])));
+}
+  
+}						  
+}
+
+
+function Assert_CheckBoxFieldsOfTable($Table_Column)
+{
+var $tablerows = _collect("_cell", "/.*/", _under(_tableHeader($Table_Column)));
+for (var $i=0; $i<$tablerows.length; $i++) {
+if(_exists(_checkbox("/.*/", _in($tablerows[$i]))))
+{
+	_assertExists(_checkbox("/.*/", _in($tablerows[$i])));
+}
+else {
+	_assertNotExists(_checkbox("/.*/", _in($tablerows[$i])));
+}
+  
+}						  
+}
+
+function Assert_TextBoxFieldsOfTable($Table_Column)
+{
+var $tablerows = _collect("_cell", "/.*/", _under(_tableHeader($Table_Column)));
+for (var $i=0; $i<$tablerows.length; $i++) {
+if(_exists(_textbox("/.*/", _in($tablerows[$i]))))
+{
+	_assertExists(_textbox("/.*/", _in($tablerows[$i])));
+}
+else {
+	_assertNotExists(_textbox("/.*/", _in($tablerows[$i])));
+}
+  
+}						  
+}
+
+function Click_BriefCheckBox($BriefRef, $Table_Column) 
+{
+	_click(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under(_tableHeader($Table_Column))));
+	_assertTrue(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under(_tableHeader($Table_Column))).checked);
+}
+
+function AddTextComment($comment)
+{
+	_setValue($_TEXTAREA_COMMENT, $comment);
+	_click($_SUBMIT_ADD);
+	_click($_SPAN_CLOSE_COMMENTS);
+}
+
+function AddTextComment_RejectAll($comment){
+	_setValue($_TEXTAREA_COMMENT, $comment);
+	_click($_SUBMIT_ADD);
+}
+
+function RejectAll_Assert()
+{
+	_click($_CHECKBOX_REJECTALL);
+	_assertExists($_DIV_REJECTED_COMMENTS_OVERLAY);
+	_assertExists(_span("Add Comments", _in($_DIV_REJECTED_COMMENTS_OVERLAY)));
+}
+
+function Assert_buttons_Commentol()
+{
+	_assert(_isVisible($_SPAN_CLOSE_COMMENTS));
+	_assert(_isVisible($_SUBMIT_ADD_COMMENTS));
+}
+
+function Add_Savecomments($Comment)
+{
+	_setValue($_TEXTAREA_COMMENT, $Comment);
+	_click($_SUBMIT_ADD);
+	
+}
+
+function AssertRejectbox_Submit($TP_Rejectpro){
+	
+_assert(_checkbox("true", _near(_cell($TP_Rejectpro))).checked);
+_click($_SUBMIT_SUBMIT);
+}
+
+function click_itg_agency_rejected_briefs_icon()
+{
+	_click($_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON);
+}
+
+function Assert_Rejectedbrief_projref_Proview($TP_proref_no)
+{
+	
+	_assertExists(_link($TP_proref_no,_near(_heading1("roundel-icon vertical itg-agency-rejected-briefs-icon"))));
+	
+}
+
+function Assert_Rejectedbrief_briefview($TP_Brief_no){
+	_assertExists(_cell($TP_Brief_no));
+}
+
+
+function Checkone_Rejectbox($TP_Briefno_Reject)
+
+{
+		_click( _checkbox("isagencyrejectedchkbx", _near(_cell($TP_Briefno_Reject))));
+ 	 	_assertExists($_DIV_REJECTED_COMMENTS_OVERLAY);
+		_assertExists(_span("Add Comments"));
+		_assertExists(_span("History"));
+  
+}
+
+function Add_Savecomments($Comment)
+{
+	_setValue($_TEXTAREA_COMMENT, $Comment);
+	_click($_SUBMIT_ADD);
+	_assertExists(_span("History", _in(_div("generic-overlay-container rejected-comments clearfix"))));
+		_assertEqual($Comment, _getText(_div($Comment, _in(_listItem("k-item k-state-active k-first k-state-highlight")))));
+
+}
+
+function Close_Comments_Rejectoverlay()
+{
+			_click($_SPAN_CLOSE);
+			
+}
+
+function Assert_LinksOfAttachment(){
+var $divs = _collect("_div", "/.*/", _in(_div("attachmentsOverlayContainer")));
+for (var $i=0; $i<$divs.length; $i++) {
+if(_exists(_link("/.*/", _in($divs[$i]))))
+{
+	_assertExists(_link("/.*/", _in($divs[$i])));
+}
+else {
+	_assertNotExists(_link("/.*/", _in($divs[$i])));
+}
+  
+}						  
+}
+
+function Assert_FileDownload() {
+	_lastDownloadedFileName();
+}
+
+function clear_LastDownload(){
+	_clearLastDownloadedFileName();
+}
+
+function assertlinks_Awaiting_Agency_Briefs_Projectview($TP_proref,$TP_briefs)
+{
+	_assertExists(_link($TP_proref));
+	_assertExists(_link("/.*/", _near(_link($TP_proref))));
+	_assertExists(_link($TP_briefs));
+}
+
+function Attchmentclick_brieflevel($TP_brief_Refno,$TP_attachmentname)
+{
+	_click(_link("/.*/",_near(_cell($TP_brief_Refno))));
+	_assert(_isVisible(_link($TP_attachmentname, _in(_div("attachmentsOverlayContainer")))));
+	_click(_span("Close", _near(_div("attachmentsOverlayContainer"))));
+	
+}
+
+function Assert_FileDownload1($Filename)
+{
+		_assertNull(_lastDownloadedFileName());
+		_click(_link($Filename, _in($_DIV_ATTACHED_FILES)));
+		_assertNotNull(_lastDownloadedFileName());
+		_assertEqual("/.pdf/", _lastDownloadedFileName());
+		_clearLastDownloadedFileName();
+		_assertNull(_lastDownloadedFileName());
+}
+
+function SearchProject($ProjRef)
+{
+	_assert(_isVisible($_LINK_SEARCH_PROJECT));
+	_click($_LINK_SEARCH_PROJECT);
+	_setValue($_TEXTBOX_PROJECTREFERENCE, $ProjRef);
+	_click($_BUTTON_SEARCH);
+	if(_exists(_span($ProjRef, _near($_TABLEHEADER_PROJECT_REF))))
+	{
+		_assertExists(_span($ProjRef, _near($_TABLEHEADER_PROJECT_REF)));
+		_assert(_isVisible(_span($ProjRef, _near($_TABLEHEADER_PROJECT_REF))));
+	}
+	else 
+	{
+		_assertNotTrue(_isVisible(_span($ProjRef, _near($_TABLEHEADER_PROJECT_REF))));
+		_assertContainsText("No results found", _div("No results found", _near($_TABLEHEADER_PROJECT_REF)));
+	}
+	
+}
+
+function ExportXMLFile()
+{	
+	var $timestamp= getUniqueId();
+	var $filename = "XMLFile"+$timestamp+ ".xml";
+	var $filepath = "C:\\Users\\preeticm\\sahi_pro\\userdata\\temp\\download\\"+$filename;
+	_log("Filename is :" +$filename);
+	_log("Filepath is :" +$filepath);
+	_assertNull(_lastDownloadedFileName());
+	_click($_SPAN_EXPORT_ICON);
+	_click($_SPAN_SELECT_EXPORT);
+	_click(_listItem("XML"));
+	_click(_link("Export"));
+	_assertNotNull(_lastDownloadedFileName());
+	_assertEqual("/.xml/", _lastDownloadedFileName());
+	_saveDownloadedAs($filepath);
+	_clearLastDownloadedFileName();
+	_assertNull(_lastDownloadedFileName());
+	return $filepath;
+}
+
+function ExportHTMLFile()
+{	
+	_assertNull(_lastDownloadedFileName());
+	_click($_SPAN_EXPORT_ICON);
+	_click($_SPAN_SELECT_EXPORT);
+	_click(_listItem("HTML"));
+	_click($_LINK_EXPORT);
+	_assertNotNull(_lastDownloadedFileName());
+	_assertEqual("/.xls/", _lastDownloadedFileName());
+	_clearLastDownloadedFileName();
+	_assertNull(_lastDownloadedFileName());
+}
+
+function ExportCSVFile()
+{	
+	_assertNull(_lastDownloadedFileName());
+	_click($_SPAN_EXPORT_ICON);
+	_click($_SPAN_SELECT_EXPORT);
+	_click(_listItem("CSV"));
+	_click($_LINK_EXPORT);
+	_assertNotNull(_lastDownloadedFileName());
+	_assertEqual("/.csv/", _lastDownloadedFileName());
+	_clearLastDownloadedFileName();
+	_assertNull(_lastDownloadedFileName());
+}
+
+function ExportPDFFile()
+{	
+	_assertNull(_lastDownloadedFileName());
+	_click($_SPAN_EXPORT_ICON);
+	_click($_SPAN_SELECT_EXPORT);
+	_click(_listItem("PDF"));
+	_click($_LINK_EXPORT);
+	_assertNotNull(_lastDownloadedFileName());
+	_assertEqual("/.pdf/", _lastDownloadedFileName());
+	_clearLastDownloadedFileName();
+	_assertNull(_lastDownloadedFileName());
+}
+
+function setHundredRecordsPerPage()
+{
+_click(_span("select", _in($_DIV_PROJECT_VIEW_TABLE)));
+_click(_listItem("100"));
+
+}
+
+function getUniqueId() 
+{
+var $currentTime = new Date();
+var $uniqueId = $currentTime.getFullYear() + '' +$currentTime.getMonth() + '' +$currentTime.getDate() + '' +$currentTime.getTime();
+return $uniqueId;
+}
+
+function differenceInDates($BriefRef) 
+{
+var $text = _getText(_cell("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_RESPOND_BY)));
+var $text1 = $text.split("/");
+var $responseDate = $text1[0];
+var $responseMonth = $text1[1];
+var $text3 = $text1[2].split("");
+var $responseYear = $text3[0] + $text3[1] + $text3[2] + $text3[3];
+
+var $currentTime = new Date();
+var $currentDate= $currentTime.getDate();
+var $month = $currentTime.getMonth();
+var $currentMonth = $month + 1;
+var $currentYear = $currentTime.getFullYear();
+
+_assertEqual(parseInt($responseYear),$currentYear);
+_assertEqual(parseInt($responseMonth),$currentMonth);
+
+var $remainingDays = parseInt($responseDate) - $currentTime.getDate();
+
+return $remainingDays;
+}
+
+function assertFontColorofPastDate() 
+{
+var $fontcolor = _style(_span("/.*/", _under($_TABLEHEADER_RESPOND_BY)), "color");
+_log($fontcolor);
+_assertEqual($fontcolor, $colorCodeRed);
+}
+
+function assertFontColorofFutureDate() 
+{
+var $fontcolor = _style(_span("/.*/", _under($_TABLEHEADER_RESPOND_BY)), "color");
+_log($fontcolor);
+_assertEqual($fontcolor, $colorCodeBlack);
+}
+
+function AddBriefArtwork($Filename, $BriefRef)
+{
+_click(_span("Add", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_ARTWORK)));
+_assert(_isVisible(_heading2("/Add Artwork to Brief /", _in($_DIV_BRIEF_DESKTOP_FILE_OVERLAY))));
+_setValue($_TEXTAREA_FILE_DESCRIPTION, $Filename);
+_setFile2($_FILE_DESKTOP_FILE_FOR_BRIEF, $Path, $urlArtworkUpload);
+_click($_BUTTON_UPLOAD);
+
+}
+
+function Assert_Buttons_ConfirmCancelpopup()
+{
+	_assertExists($_BUTTON_CLOSE);
+	_assertExists($_BUTTON_CANCEL );
+	_assertExists($_BUTTON_OK );
+}
+
+function Verify_Tabs_Cost_Overlay_Briefsview()
+{
+	
+	_assertExists($_LINK_TOTAL_COSTS);
+	_assertExists($_SPAN_VERSION_COSTS);
+	
+}
+
+function Verifyfileds_TotalCosttab()
+{
+	_assertExists($_FIELD_ARTWORK_COSTS);
+	_assertExists($_FIELD_ANNOTATION_COST);
+	_assertExists($_FIELD_TOTAL_COST);
+		
+}
+
+function Verifyfields_Costs_overlay_VersionCost_tab()
+{
+
+_assertExists($_FIELD_TOTAL_COST_VERSIONCOST);
+_assertExists($_FIELD_VERSION_VERSIONCOST);
+_assertExists($_HEADER_BRIEFREFNO);
+_assertExists($_HEADER_CLIENTVERSIONNUM);
+_assertExists($_HEADER_TOTAL_COST);
+
+}
+
+function Close_Costoverlay()
+{
+_click($CLOSE_BUTTON_COSTOVERLAY);
+}
+
+function Submit_Awaitingartwork()
+{
+_click($_BUTTON_SUBMIT);
+
+}
+
+function verify_Validationerrorpopup()
+{
+_assertExists($_DIV_POPUP_VALIDATIONERRORS);
+_assertExists($POPUP_VALIDATIONERRORS_MESSAGE);
+}
+
+function Assert_ArtworkDownload($BriefRef)
+{
+		_assertNull(_lastDownloadedFileName());
+		_click(_span("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK)));
+		_assertNotNull(_lastDownloadedFileName());
+		_assertEqual("/.pdf/", _lastDownloadedFileName());
+		_clearLastDownloadedFileName();
+		_assertNull(_lastDownloadedFileName());
+}
+
+function Assertbuttons_AwatitingArtworkBriefsviewpage()	
+{
+	_assert(_isVisible($_SPAN_BACK));
+	_assert(_isVisible($_BUTTON_SUBMIT));
+	var $tablerows = _collect("_cell", "/.*/", _under($_TABLEHEADER_AWAITINGARTWORK_ARTWORK));
+	for (var $i=0; $i<$tablerows.length; $i++) {
+	_assertExists(_span("Add", _in($tablerows[$i])));
+}						  	
+}
+
+function Assertbuttons_AwatitingArtworkAmendsBriefsviewpage()	
+{
+	_assert(_isVisible($_SPAN_BACK));
+	_assert(_isVisible($_BUTTON_SUBMIT));
+	var $tablerows = _collect("_cell", "/.*/", _under($_TABLEHEADER_AWAITINGARTWORK_ARTWORK));
+	for (var $i=0; $i<$tablerows.length; $i++) {
+	_assertExists(_span("Add", _in($tablerows[$i])));
+}	
+var $tablerows = _collect("_cell", "/.*/", _under($_TABLEHEADER_AWAITINGARTWORK_VIEW_PREVIOUS_VERSIONS));
+	for (var $i=0; $i<$tablerows.length; $i++) {
+	_assertExists(_span("View", _in($tablerows[$i])));
+}						  	
+}
+
+function ApproveArtworkFiles($BriefRef)
+{
+	_click(_span("View", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_ARTWORK)));
+	_click(_image("Page 1"));
+	_click($_BUTTON_APPROVE);
+	_click($_SPAN_CLOSE);
+}
+
+function RejectArtworkFiles($BriefRef)
+{
+	_click(_span("View", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_ARTWORK)));
+	_click(_image("Page 1"));
+	_click($_BUTTON_NOT_APPROVE);
+	_click(_checkbox("/.*/", _in($_DIV_REJECT_REASON_1)));
+	_click(_checkbox("/.*/", _in($_DIV_REJECT_REASON_2)));
+	_click(_checkbox("/.*/", _in($_DIV_REJECT_REASON_3)));
+	_click(_checkbox("/.*/", _in($_DIV_REJECT_REASON_4)));
+	_setValue($_TEXTAREA_REJECTION_COMMENTS, "Testcomment");
+	_click($_BUTTON_SUBMIT_BRIEFS);
+	_click($_SPAN_CLOSE_THANKYOU_OVERLAY);
+	_click($_SPAN_CLOSE);
+}
+
+function Approve_ArtworkFiles()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+	_click(_span("View", _rightOf(_cell($BriefRef[$i])), _under($_TABLEHEADER_ARTWORK)));
+	_click(_image($BriefRef[$i], _in($_DIV_ATTACHED_FILES)));
+	_click($_BUTTON_APPROVE);
+	_click($_SPAN_CLOSE);
+	} 
+}
+
+function SelectApprovedArtworkFiles()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+	_click(_checkbox("/.*/", _rightOf(_cell($BriefRef[$i])), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)));
+	} 
+}
+
+function Assert_FieldsOfTableElements($Table_Column_Element)
+{
+var $tablerows = _collect("_cell", "/.*/", _under($Table_Column_Element));
+for (var $i=0; $i<$tablerows.length; $i++) {
+if(_exists(_link("/.*/", _in($tablerows[$i]))))
+{
+	_assertExists(_link("/.*/", _in($tablerows[$i])));
+}
+else if(_exists(_checkbox("/.*/", _in($tablerows[$i]))))
+{
+	_assertExists(_checkbox("/.*/", _in($tablerows[$i])));
+}
+else if (_exists(_textbox("/.*/", _in($tablerows[$i]))))
+{
+	_assertExists(_textbox("/.*/", _in($tablerows[$i])));
+}
+else
+{
+	_assertNotExists(_link("/.*/", _in($tablerows[$i])));
+	_assertNotExists(_checkbox("/.*/", _in($tablerows[$i])));
+	_assertNotExists(_textbox("/.*/", _in($tablerows[$i])));
+}
+  
+}						  
+}
+
+
+

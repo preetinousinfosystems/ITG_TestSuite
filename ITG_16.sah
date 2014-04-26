@@ -1,0 +1,84 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahiclientA";
+var $TP_Password = "Pa55Word!!";
+
+var $Agency = "Simpson Group(Agency)";
+var $Printer = "Communisis";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Outside Agency Rejects All Briefs");
+$tb.start();
+	OutsideAgency_NavigateToNewProject($ProjRef);
+	OutsideAgency_RejectAllBriefs();
+	Logout();
+	
+$tb.end();
+
+var $t1 = _testcase("Step 1", "Login as Client User and navigate to Workflow > Key Actions > Agency Rejected Briefs > Click on Briefs Hyperlink");
+$t1.start();
+
+	LoginAsClientUserandNavigateToKeyActions($TP_Username, $TP_Password);
+	Common_NavigateToClientWorkflow();
+	_click($_LINK_AGENCY_REJECTED_BRIEFS);
+	Assert_TableFieldsAgencyRejectBriefsProjectLevel();
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Click on  the Comments link of a brief in the 'Agency Rejected Brief details page'");
+$t2.start();
+		
+		Assert_TableFieldsAgencyRejectBriefsProjectLevel();
+		Assert_AgencyRejectBriefs_BriefTableFields();
+		_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_REJECT_COMMENTS)));
+		_assertEqual("Comments", _getText(_heading2("Comments", _in($_DIV_REJECTED_COMMENTS_OVERLAY))));
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Verify the content of the Comment Overlay");
+$t3.start();
+		
+		_assert(_isVisible(_span("History", _in($_DIV_REJECTED_COMMENTS_OVERLAY))));
+		_click($_SPAN_CLOSE);
+		
+$t3.end();
+
+var $t4 = _testcase("Step 4", "Verify the links in the Attachment Overlay");
+$t4.start();
+		_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_ATTACHMENTS)));
+		_assertEqual("Attachments", _getText(_heading2("Attachments", _in($_DIV_ATTACHMENT_OVERLAY_CONTAINER))));
+		Assert_LinksOfAttachment();
+		
+$t4.end();
+
+var $t5 = _testcase("Step 5", "Click on the Attachment Close Link");
+$t5.start();
+		_click($_SPAN_CLOSE);
+		_assertNotTrue(_isVisible(_heading2("Attachments", _in($_DIV_ATTACHMENT_OVERLAY_CONTAINER))));
+		Logout();
+$t5.end();
+

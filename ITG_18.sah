@@ -1,0 +1,76 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $Username = "sahiclienta";
+var $Password = "Pa55Word!!";
+
+var $Agency = "Simpson Group(Agency)";
+var $Printer = "Communisis";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+var $oldProjectRef = "ITG145";
+
+
+var $t1a = _testcase("Step 1a", "Create a New Project for Outside Agency and submit briefs");
+$t1a.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$t1a.end();
+
+var $t1b = _testcase("Step 1b", "Login as Outside Agency and Reject All Briefs");
+$t1b.start();
+	OutsideAgency_NavigateToNewProject($ProjRef);
+	OutsideAgency_RejectAllBriefs();
+	Logout();
+	
+$t1b.end();
+
+var $t1c = _testcase("Step 1c", "Login As Project Owner > Navigate To Workflow > Click 'Agency Rejected Briefs'");
+$t1c.start();
+
+	LoginAsClientUserandNavigateToKeyActions($Username, $Password);
+	Common_NavigateToClientWorkflow();
+	_click($_LINK_AGENCY_REJECTED_BRIEFS);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+
+$t1c.end();
+
+var $t1d = _testcase("Step 1d", "Check the 'Respond by date' for Outside Agency ; This is 48 hours (2 days) after submission excluding weekends and B/H’s.");
+$t1d.start();
+	var $differenceInDays = differenceInDates($BriefRef);
+	_assertEqual("2", $differenceInDays);
+	
+$t1d.end();
+
+var $t2 = _testcase("Step 2", "Respond by date is in the past should appear in Red");
+$t2.start();
+	_click($_SPAN_BACK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($oldProjectRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	assertFontColorofPastDate();
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Respond by date  in the future should appear in Black");
+$t3.start();
+	_click($_SPAN_BACK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	assertFontColorofFutureDate();
+$t3.end();
+

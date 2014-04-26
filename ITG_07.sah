@@ -1,0 +1,67 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $out_Username = "sahioutagency";
+var $Password = "Pa55Word!!";
+
+var $Agency = "Simpson Group(Agency)";
+var $Printer = "Communisis";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+var $oldProjectRef = "ITG202";
+
+var $t1 = _testcase("Step 1", "Create a New Project for Outside Agency and submit briefs");
+$t1.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Login As Outside Agency > Navigate To Workflow > Click 'Awaiting Agency Briefs'");
+$t2.start();
+
+	LoginAsoutsideAgencyUserandNavigateToKeyActions($out_Username, $Password);
+	Common_NavigateToWorkflow();
+	_click($CMN_ICON_AGENCY_BRIEFS);
+	assertfields_Awaiting_Agency_Briefs_Projectview();
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Check the available Read Only Brief fields in the Briefs fields of' Awaiting Agency briefs ; Brief View page'");
+$t3.start();
+	
+		Assert_AwaitingAgencyBriefs_BriefTableFields();
+		Assert_ReadOnlyFieldsOfTable("Brief Ref");
+		Assert_ReadOnlyFieldsOfTable("Brief Description");
+		Assert_ReadOnlyFieldsOfTable("Artwork Approval Deadline");
+		Assert_ReadOnlyFieldsOfTable("Respond By");
+		Assert_ReadOnlyFieldsOfTable("Artwork Matrix Price(£)");
+		
+$t3.end();
+
+var $t4 = _testcase("Step 4", "Check the 'Respond by date' for Outside Agency ; This is 48 hours (2 days) after submission excluding weekends and B/H’s.");
+$t4.start();
+	var $differenceInDays = differenceInDates($BriefRef);
+	_assertEqual("2", $differenceInDays);
+	Logout();
+$t4.end();
+
+
+
+

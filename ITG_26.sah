@@ -1,0 +1,110 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahiagency";
+var $Password = "Pa55Word!!";
+var $client_Username = "sahiclientA";
+
+var $Agency = "ITG";
+var $Printer = "ITG Print Management";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	$BriefRef1 = $BriefReference[1];
+	$BriefRef2 = $BriefReference[2];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Approve the new Project > for ITG Agency Project");
+$tb.start();
+	PrintBuyer_NavigateToNewProject($ProjRef);
+	PrintBuyer_ApproveAllBriefs();
+	Logout();
+	
+$tb.end();
+
+var $tc = _testcase("Step C", "ITG Agency Rejects All Briefs");
+$tc.start();
+	ITGAgency_NavigateToNewProject($ProjRef);
+	ITGAgency_RejectAllBriefs();
+	Logout();
+	
+$tc.end();
+
+var $td = _testcase("Step D", "Print Buyer submits back to project owner");
+$td.start();
+	PrintBuyer_NavigateToITGAgencyRejectedBriefs($ProjRef);
+	PrintBuyer_ResubmitsBriefsToProjectOwner();
+	Logout();
+$td.end();
+
+var $te = _testcase("Step E", "Client User Re-Submits All Briefs");
+$te.start();
+	ClientReSubmitsRejectedBriefs($ProjRef);
+	Logout();	
+$te.end();
+
+var $tf = _testcase("Step F", "Print Buyer Approve the new Project > for ITG Agency Project");
+$tf.start();
+	PrintBuyer_NavigateToNewProject($ProjRef);
+	PrintBuyer_ApproveAllBriefs();
+	Logout();
+	
+$tf.end();
+
+var $tg = _testcase("Step G", "ITG Agency Accepts All Briefs");
+$tg.start();
+	ITGAgency_NavigateToNewProject($ProjRef);
+	ITGAgency_AcceptAllBriefs();
+	Logout();
+	
+$tg.end();
+
+var $t1 = _testcase("Step 1", "Login As ITG Agency User > Navigate to Workflow > Key Actions > Awaiting Artwork > Click on No. Of Briefs");
+$t1.start();
+
+	LoginAsAgencyUserandNavigateToKeyActions($TP_Username, $Password);
+	Common_NavigateToWorkflow();
+	_click($CMN_ICON_AWAITING_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Click the comments Link");
+$t2.start();
+
+	_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_REJECT_COMMENTS)));
+	_assertEqual("Comments", _getText(_heading2("Comments", _in($_DIV_REJECTED_COMMENTS_OVERLAY))));
+	_assert(_isVisible(_span("History", _in($_DIV_REJECTED_COMMENTS_OVERLAY))));
+	_assertExists(_link("/.*/", _in($_DIV_COMMENT_HISTORY_TAB_AREA)));
+	_assertExists(_div("note-detail", _in($_DIV_COMMENT_HISTORY_TAB_AREA)));
+	
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Click (X) close Link");
+$t3.start();
+
+	_click($_SPAN_CLOSE);
+	_assertNotTrue(_isVisible($_DIV_REJECTED_COMMENTS_OVERLAY));
+	Logout();
+$t2.end();
+

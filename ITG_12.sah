@@ -1,0 +1,178 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahiclientA";
+var $TP_Password = "Pa55Word!!";
+
+var $Agency = "Simpson Group(Agency)";
+var $Printer = "Communisis";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefReference = new Array();
+
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Outside Agency Rejects All Briefs");
+$tb.start();
+	OutsideAgency_NavigateToNewProject($ProjRef);
+	OutsideAgency_RejectAllBriefs();
+	Logout();
+	
+$tb.end();
+
+
+var $t1 = _testcase("Step 1", "Login as Client User and navigate to Workflow > Key Actions > Agency Rejected Briefs");
+$t1.start();
+
+	LoginAsClientUserandNavigateToKeyActions($TP_Username, $TP_Password);
+	Common_NavigateToClientWorkflow();
+	_click($_LINK_AGENCY_REJECTED_BRIEFS);
+	Assert_TableFieldsAgencyRejectBriefsProjectLevel();
+
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Check Read Only fields in 'Agency Reject Briefs Project Level'");
+$t2.start();
+
+	Assert_ReadOnlyFieldsOfTable("Project Description");
+	Assert_ReadOnlyFieldsOfTable("Event Name");
+	Assert_ReadOnlyFieldsOfTable("Project Owner");
+	Assert_ReadOnlyFieldsOfTable("Category");
+	Assert_ReadOnlyFieldsOfTable("Event Start Date");
+	Assert_ReadOnlyFieldsOfTable("Event End Date");
+
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Check available links in 'Agency Reject Briefs Project Level'");
+$t3.start();
+
+	Assert_LinkFieldsOfTable("Project Ref");
+	Assert_LinkFieldsOfTable("No. of Briefs");
+	
+$t3.end();
+
+var $t4 = _testcase("Step 4", "Click on the 'Project Ref' hyperlink");
+$t4.start();
+	setHundredRecordsPerPage();
+		_click(_link($ProjRef));
+		_assertEqual("Agency Rejected Briefs", _getText($_HEADING_AGENCY_REJECTED_BRIEFS));
+		_click($_SPAN_BACK);
+	
+$t4.end();
+
+var $t5 = _testcase("Step 5", "Click on the Briefs hyperlink");
+$t5.start();
+	setHundredRecordsPerPage();
+		_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+		_assertEqual("Agency Rejected Briefs", _getText($_HEADING_AGENCY_REJECTED_BRIEFS));
+	
+$t5.end();
+
+var $t6 = _testcase("Step 6", "Check the available Project fields in the Project fields of 'Agency Rejected Brief details page'");
+$t6.start();
+
+		Assert_TableFieldsAgencyRejectBriefsProjectLevel();
+	
+$t6.end();
+
+var $t7 = _testcase("Step 7", "Check the available Read Only Brief fields in the Briefs fields of' Agency Rejected Brief details page'");
+$t7.start();
+
+		Assert_AgencyRejectBriefs_BriefTableFields();
+		Assert_ReadOnlyFieldsOfTable("Brief Description");
+		Assert_ReadOnlyFieldsOfTable("Artwork Approval Deadline");
+		Assert_ReadOnlyFieldsOfTable("Respond By");
+		Assert_ReadOnlyFieldsOfTable("Site");
+		Assert_ReadOnlyFieldsOfTable("Part");
+		Assert_ReadOnlyFieldsOfTable("Brief Type");
+	
+$t7.end();
+
+var $t8 = _testcase("Step 8", "Check the available Links  in the 'Agency Rejected Brief details page'");
+$t8.start();
+
+	Assert_LinkFieldsOfTable("Project Ref");
+	Assert_LinkFieldsOfTable("Brief Ref");
+	Assert_LinkFieldsOfTable("Attachments");
+	Assert_LinkFieldsOfTable("Brief");
+	Assert_LinkFieldsOfTable("Reject Comments");
+	
+$t8.end();
+
+
+var $t9 = _testcase("Step 9", "Click on 'Project Ref ' Link");
+$t9.start();
+		
+		_click(_link($ProjRef));
+		_assert(_isVisible($_DIV_STEP_ONE));
+		_assert(_isVisible($_DIV_STEP_TWO));
+		
+$t9.end();
+
+var $t10 = _testcase("Step 10", "Navigate back to 'Agency Rejected Brief details page' and Click on the 'Attachment' link");
+$t10.start();
+	_click($_LINK_WORKFLOW);
+	_click($_LINK_AGENCY_REJECTED_BRIEFS);
+	setHundredRecordsPerPage();
+	_click(_link($ProjRef));
+	_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_ATTACHMENTS)));
+	Assert_LinksOfAttachment();
+	_assertEqual("Attachments", _getText(_heading2("Attachments", _in($_DIV_ATTACHMENT_OVERLAY_CONTAINER))));
+	_click($_SPAN_CLOSE);
+$t10.end(); 
+
+var $t11 = _testcase("Step 11", "Navigate back to 'Agency Rejected Brief details page' and Click on the 'Comments' link");
+$t11.start();
+	_click($_LINK_WORKFLOW);
+	_click($_LINK_AGENCY_REJECTED_BRIEFS);
+	setHundredRecordsPerPage();
+	_click(_link($ProjRef));
+	_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_REJECT_COMMENTS)));
+	_assertEqual("Comments", _getText(_heading2("Comments", _in($_DIV_REJECTED_COMMENTS_OVERLAY))));
+	_click($_SPAN_CLOSE);
+$t11.end();
+
+var $t12 = _testcase("Step 12", "Navigate back to 'Agency Rejected Brief details page' and Click on the 'Brief' link");
+$t12.start();
+	_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_LINK_TABLEHEADER_BRIEF)));
+	_assertEqual("Brief Details", _getText(_heading2("Brief Details", _in($_DIV_BRIEF_DETAIL_OVERLAY))));
+	_click($_SPAN_CLOSE);
+$t12.end();
+
+var $t13 = _testcase("Step 13", "Navigate back to 'Agency Rejected Brief details page' and Click on the 'Brief Ref' link");
+$t13.start();
+	_click(_link($BriefRef));
+	_assert(_isVisible($_DIV_STEP_ONE));
+	_assert(_isVisible($_DIV_STEP_TWO));
+	_click($_LINK_WORKFLOW)
+	_click($_LINK_AGENCY_REJECTED_BRIEFS);
+	setHundredRecordsPerPage();
+	_click(_link($ProjRef));
+	
+$t13.end();
+
+var $t14 = _testcase("Step 14", "Click the 'Back' button  in the 'Agency Rejected Brief details page'");
+$t14.start();
+	_click($_SPAN_BACK);
+	_assertEqual("Agency Rejected Briefs", _getText($_HEADING_AGENCY_REJECTED_BRIEFS));
+	Logout();
+$t14.end();

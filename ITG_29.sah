@@ -1,0 +1,307 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_CreateProject_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+_navigateTo($ITGApplicationURL);
+
+var $TP_Username = "sahioutagency";
+var $Password = "Pa55Word!!";
+var $client_Username = "sahiclientA";
+
+var $Agency = "Simpson Group(Agency)";
+var $Printer = "Communisis";
+var $Filename1 = "Testree";
+var $Filename2 = "Proj File";
+var $ArtworkName = "TestreeArt";
+var $ArtworkName1 = "TestreeArt1";
+var $ArtworkName2 = "TestreeArt2";
+var $ProjRef = "";
+var $BriefRef = "";
+var $BriefRef1 = "";
+var $BriefRef2 = "";
+var $hours = "6.00";
+var $costs = "15.34";
+var $BriefReference = new Array();
+var $comment528char = "!@#$%^&*()1234567890uvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmfghijklmnopqrstuvwxyz";
+var $comment500char = "!@#$%^&*()1234567890uvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdef";
+
+var $ta = _testcase("Step A", "Create a New Project and submit briefs");
+$ta.start();
+
+	CreateNewProject($Agency, $Printer, $Filename1, $Filename2);
+	$ProjRef = getProjRefValue();
+	CreateMoreBriefs();
+	SaveLineForAllBriefs();
+	$BriefReference = getBriefValues();
+	$BriefRef = $BriefReference[0];
+	$BriefRef1 = $BriefReference[1];
+	$BriefRef2 = $BriefReference[2];
+	printBriefValues();
+	SubmitAllBriefs();
+	Logout();
+	
+$ta.end();
+
+var $tb = _testcase("Step B", "Outside Agency Rejects All Briefs");
+$tb.start();
+	OutsideAgency_NavigateToNewProject($ProjRef);
+	OutsideAgency_RejectAllBriefs();
+	Logout();
+	
+$tb.end();
+
+var $tc = _testcase("Step C", "Client User Re-Submits All Briefs");
+$tc.start();
+	ClientReSubmitsRejectedBriefs($ProjRef);
+	Logout();	
+$tc.end();
+
+var $td = _testcase("Step D", "Outside Agency Accepts All Briefs");
+$td.start();
+	OutsideAgency_NavigateToNewProject($ProjRef);($ProjRef);
+	OutsideAgency_AcceptAllBriefs();
+	Logout();
+	
+$td.end();
+
+var $te = _testcase("Step E", "Outside Agency Awaiting artwork > submit artwork");
+$te.start();
+	OutsideAgency_NavigateToAwaitingArtwork($ProjRef);
+	AddBriefArtwork($ArtworkName, $BriefRef);
+	AddBriefArtwork($ArtworkName1, $BriefRef1);
+	AddBriefArtwork($ArtworkName2, $BriefRef2);
+	OutsideAgency_SubmitArtwork();
+	Logout();
+	
+$te.end();
+
+var $tf = _testcase("Step F", "ClientUser > RejectsArtwork");
+$tf.start();
+	ClientUser_NavigatesToApproveArtwork($ProjRef);
+	RejectArtwork();
+	Logout();
+$tf.end();
+
+var $tg = _testcase("Step G", "Outside Agency User > New Amend Request");
+$tg.start();
+	OutsideAgency_NavigateToNewAmendRequests($ProjRef);
+	SelectAllandSubmit();
+	Logout();
+$tg.end();
+
+var $t1 = _testcase("Step 1", "Login As Outside Agency User > Navigate to Workflow > Key Actions > Awaiting Artwork > Click on No. Of Briefs");
+$t1.start();
+
+	LoginAsAgencyUserandNavigateToKeyActions($TP_Username, $Password);
+	Common_NavigateToWorkflow();
+	_click($CMN_ICON_AWAITING_ARTWORK_AMENDS);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	_click(_link("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_REJECT_COMMENTS)));
+	_assertEqual("Comments", _getText(_heading2("Comments", _in($_DIV_REJECTED_COMMENTS_OVERLAY))));
+	_assert(_isVisible(_span("History", _in($_DIV_REJECTED_COMMENTS_OVERLAY))));
+	_assertExists(_link("/.*/", _in($_DIV_COMMENT_HISTORY_TAB_AREA)));
+	_assertExists(_div("note-detail", _in($_DIV_COMMENT_HISTORY_TAB_AREA)));
+	_click($_SPAN_CLOSE);
+	
+	var $textboxes = _collect("_textbox", "/.*/", _under($_TABLEHEADER_COST_HRS));
+	_setValue($textboxes[0], "");
+	_setValue($textboxes[0], $hours);
+	_click(_div("gridAwaitingArtworkBriefs"));
+	var $valueText = _getText($textboxes[0]);
+	_assertEqual($valueText, $hours);
+	_setValue($textboxes[1], "");
+	_setValue($textboxes[1], $costs);
+	_click(_div("gridAwaitingArtworkBriefs"));
+	var $valueText = _getText($textboxes[1]);
+	_assertEqual($valueText, $costs);
+	
+	_click(_span("Add", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_ARTWORK)));
+	_assert(_isVisible(_heading2("/Add Artwork to Brief /", _in($_DIV_BRIEF_DESKTOP_FILE_OVERLAY))));
+	_setValue($_TEXTAREA_FILE_DESCRIPTION, $ArtworkName);
+	_setFile2($_FILE_DESKTOP_FILE_FOR_BRIEF, $Path, $urlArtworkUpload);
+	_click($_BUTTON_UPLOAD);
+	_assert(_isVisible(_span("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK))));
+	_assertNotTrue(_isVisible($_DIV_BRIEF_DESKTOP_FILE_OVERLAY));
+	_click($_SPAN_BACK);
+$t1.end();
+
+var $t2 = _testcase("Step 2", "Check Read Only Fields in 'Awaiting Artwork Amends' Project View");
+$t2.start();
+		
+		AssertTableProjectLevel_AwaitingArtworkAmends();
+		Assert_ReadOnlyFieldsOfTable("Project Ref");
+		Assert_ReadOnlyFieldsOfTable("Project Description");
+		Assert_ReadOnlyFieldsOfTable("Event Name");
+		Assert_ReadOnlyFieldsOfTable("Project Owner");
+		Assert_ReadOnlyFieldsOfTable("Artwork Approval Deadline");
+		Assert_ReadOnlyFieldsOfTable("Event Start Date");
+		Assert_ReadOnlyFieldsOfTable("Event End Date");
+$t2.end();
+
+var $t3 = _testcase("Step 3", "Check icons available in 'Awaiting artwork amends, project page'");
+$t3.start();
+		//Assert_LinkFieldsOfTable("Attachments");
+$t3.end();
+
+var $t4 = _testcase("Step 4", "Click Attachment and view the Project Level Attachment");
+$t4.start();
+	//setHundredRecordsPerPage();
+	//_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_ATTACHMENTS)));
+	//_assert(_isVisible($_DIV_ATTACHMENT_OVERLAY_CONTAINER));
+	//_assert(_isVisible($_DIV_USER_DETAIL));
+	//_assert(_isVisible(_link("/.*/", _in($_DIV_ATTACHMENT_OVERLAY_CONTENT))));
+	//Assert_LinksOfAttachment();
+	//_click($_SPAN_CLOSE_ATTACHMENTS);
+	//_assertNotTrue(_isVisible(_heading2("Attachments", _in($_DIV_ATTACHMENT_OVERLAY_CONTAINER))));
+$t4.end();
+
+var $t5 = _testcase("Step 5", "Check available links in 'Awaiting artwork amends, project page'");
+$t5.start();
+		//Assert_LinkFieldsOfTable("Attachments");
+		Assert_LinkFieldsOfTable("No. of Briefs");
+		
+$t5.end();
+
+var $t6 = _testcase("Step 6", "Click Briefs link in 'Awaiting Artwork Amends, project page '");
+$t6.start();
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+		
+$t6.end();
+
+var $t7 = _testcase("Step 7", "Verify Read Only Fields in Awaiting Artwork Amends > Brief View Page");
+$t7.start();
+	
+	Assert_AwaitingArtwork_BriefTableFields();
+	Assert_FieldsOfTableElements($_TABLEHEADER_BRIEF_REF);
+	Assert_FieldsOfTableElements($_TABLEHEADER_BRIEF_DESCRIPTION);
+	Assert_FieldsOfTableElements($_TABLEHEADER_BRIEF_TYPE);
+	Assert_FieldsOfTableElements($_TABLEHEADER_AWAITINGARTWORK_DEADLINE);
+
+$t7.end();
+
+var $t8 = _testcase("Step 8", "Verify the editable Fields in the Awaiting Artwork, briefs page");
+$t8.start();
+	
+	Assert_FieldsOfTableElements($_TABLEHEADER_AWAITINGARTWORK_PRINTREADY);
+	Assert_FieldsOfTableElements($_TABLEHEADER_AWAITINGARTWORK_SELECT);
+	Assert_FieldsOfTableElements($_TABLEHEADER_COST_HRS);
+$t8.end();
+
+var $t9 = _testcase("Step 9", "Verify the Links in the Awaiting Artwork, briefs page");
+$t9.start();
+	Assert_FieldsOfTableElements($_TABLEHEADER_AWAITINGARTWORK_REJECTCOMMENTS);
+$t9.end();
+
+var $t10 = _testcase("Step 10", "Verify the Buttons in the Awaiting Artwork, briefs page");
+$t10.start();
+	Assertbuttons_AwatitingArtworkAmendsBriefsviewpage();
+$t10.end();
+
+var $t11 = _testcase("Step 11", "Click the Back button while in 'Awaiting Artwork Amends, briefs page'");
+$t11.start();
+	_click($_SPAN_BACK);
+	_assertEqual("Awaiting Artwork Amends", _getText($_HEADING_AWAITING_ARTWORK_AMENDS));
+$t11.end();
+
+var $t12 = _testcase("Step 12", "Navigate back to 'Awaiting Artwork Amends, briefs page > Click the View button");
+$t12.start();
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	_click(_span("View", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_VIEW_PREVIOUS_VERSIONS)));
+	_assert(_isVisible($_DIV_BRIEFVIEW_ARTWORKOVERLAY));
+	_assert(_isVisible(_span("All Comments", _in($_DIV_BRIEFVIEW_ARTWORKOVERLAY))));
+	_assert(_isVisible(_span("Review All Comments", _in($_DIV_BRIEFVIEW_ARTWORKOVERLAY))));
+	_assert(_isVisible(_span("Attachments", _in($_DIV_BRIEFVIEW_ARTWORKOVERLAY))));
+	_click(_span("Attachments", _in($_DIV_BRIEFVIEW_ARTWORKOVERLAY)));
+	_assert(_isVisible(_span("Review Attachments", _in($_DIV_BRIEFVIEW_ARTWORKOVERLAY))));
+	_assert(_isVisible(_image("/.*/", _in($_DIV_BRIEFVIEW_ARTWORKOVERLAY))));
+	_click(_span("Close", _near($_DIV_BRIEFVIEW_ARTWORKOVERLAY)));
+$t12.end();
+
+var $t13 = _testcase("Step 13", "Click on the 'Add' button");
+$t13.start();
+	_click(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)));
+	_assertNotTrue(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)).checked);
+	_click(_span("Add", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_ARTWORK)));
+	_assert(_isVisible(_heading2("/Add Artwork to Brief /", _in($_DIV_BRIEF_DESKTOP_FILE_OVERLAY))));
+	_assert(_isVisible($_FILE_DESKTOP_FILE_FOR_BRIEF));
+	_setValue($_TEXTAREA_FILE_DESCRIPTION, $ArtworkName);
+	_setFile2($_FILE_DESKTOP_FILE_FOR_BRIEF, $Path, $urlArtworkUpload);
+	_assert(_isVisible($_BUTTON_UPLOAD));
+	_click($_BUTTON_UPLOAD);
+	_assertTrue(_isVisible(_span("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK))));
+	_click(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)));
+	_assert(_checkbox("/.*/", _rightOf(_cell($BriefRef)), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)).checked);
+	
+$t13.end();
+
+var $t14 = _testcase("Step 14", "Enter 'Cost (hrs) > Add Artwork > Click on the Select Tick box > Click the 'Back' button");
+$t14.start();
+	var $textboxes = _collect("_textbox", "/.*/", _under($_TABLEHEADER_COST_HRS));
+	_setValue($textboxes[2], "");
+	_setValue($textboxes[2], $hours);
+	_click(_div("gridAwaitingArtworkBriefs"));
+	var $valueText = _getText($textboxes[2]);
+	_assertEqual($valueText, $hours);
+	_setValue($textboxes[3], "");
+	_setValue($textboxes[3], $costs);
+	_click(_div("gridAwaitingArtworkBriefs"));
+	var $valueText = _getText($textboxes[3]);
+	_assertEqual($valueText, $costs);
+	
+	_click(_link("/.*/", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_COSTTODATE)));
+	_assertNotExists(_textbox("/.*/", _in($_DIV_BRIEF_COSTS_OVERLAY)));
+	_assertNotExists(_textarea("/.*/", _in($_DIV_BRIEF_COSTS_OVERLAY)));
+	_click($CLOSE_BUTTON_COSTOVERLAY);
+	
+	_assertNotTrue(_checkbox("/.*/", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)).checked);
+	_click(_span("Add", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_ARTWORK)));
+	_assert(_isVisible(_heading2("/Add Artwork to Brief /", _in($_DIV_BRIEF_DESKTOP_FILE_OVERLAY))));
+	_assert(_isVisible($_FILE_DESKTOP_FILE_FOR_BRIEF));
+	_setValue($_TEXTAREA_FILE_DESCRIPTION, $ArtworkName);
+	_setFile2($_FILE_DESKTOP_FILE_FOR_BRIEF, $Path, $urlArtworkUpload);
+	_assert(_isVisible($_BUTTON_UPLOAD));
+	_click($_BUTTON_UPLOAD);
+	_assertTrue(_isVisible(_span("/.*/", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK))));
+	_click(_checkbox("/.*/", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)));
+	_assert(_checkbox("/.*/", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)).checked);
+	
+$t14.end();
+
+var $t15 = _testcase("Step 15", "Click the 'Back' button");
+$t15.start();
+	_click($_SPAN_BACK);
+	_assertEqual("Awaiting Artwork Amends", _getText($_HEADING_AWAITING_ARTWORK_AMENDS));
+$t15.end();
+
+var $t16 = _testcase("Step 16", "Again navigate to 'Awaiting Artwork Amends' Brief Page > Check PDF icon");
+$t16.start();
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	_assertNotTrue(_isVisible(_span("/.*/", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK))));
+$t16.end();
+
+var $t17 = _testcase("Step 17", "Verify the state of the PDF icon");
+$t17.start();
+	_click(_span("Add", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_ARTWORK)));
+	_assert(_isVisible(_heading2("/Add Artwork to Brief /", _in($_DIV_BRIEF_DESKTOP_FILE_OVERLAY))));
+	_assert(_isVisible($_FILE_DESKTOP_FILE_FOR_BRIEF));
+	_setValue($_TEXTAREA_FILE_DESCRIPTION, $ArtworkName);
+	_setFile2($_FILE_DESKTOP_FILE_FOR_BRIEF, $Path, $urlArtworkUpload);
+	_assert(_isVisible($_BUTTON_UPLOAD));
+	_click($_BUTTON_UPLOAD);
+	_assertTrue(_isVisible(_span("/.*/", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK))));
+$t17.end();
+
+var $t18 = _testcase("Step 18", "Click on the PDF icon");
+$t18.start();
+		_assertNull(_lastDownloadedFileName());
+		_click(_span("/.*/", _rightOf(_cell($BriefRef1)), _under($_TABLEHEADER_AWAITINGARTWORK_UPLOADEDARTWORK)));
+		_assertNotNull(_lastDownloadedFileName());
+		_assertEqual("/.pdf/", _lastDownloadedFileName());
+		_clearLastDownloadedFileName();
+		_assertNull(_lastDownloadedFileName());
+		Logout();
+$t18.end();

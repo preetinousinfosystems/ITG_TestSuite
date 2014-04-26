@@ -1,0 +1,385 @@
+_include("ITG_Common_Utils.sah");
+_include("ITG_Common_Properties.sah");
+
+function CreateNewProject($Agency, $Printer, $Filename1, $Filename2)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiclientA");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($_LINK_CREATE_PROJECT);
+	_click($_SPAN_SELECT_EVENT_NAME);
+	_click(_listItem("Jan New product launch"));
+	_click($_SUBMIT_UPDATE);
+	_setValue($_TEXTBOX_PROJECTDESC, "Testree");
+	_click($_SPAN_SELECT_CATEGORY);
+	_click(_listItem("Bakery"));
+	_click($_SPAN_SELECT_SUBCATEGORY);
+	_click(_listItem("Bread"));
+	_click($_SPAN_SAVE);
+	_click($_SPAN_CLOSE);
+	
+	_click($_BUTTON_SELECT_TRADING_FORMATS);
+	_click(_checkbox("multiselect_TradingFormatIds"));
+	_click(_div("input-row select-site", _near($_LABEL_TRADING_FORMATS)));
+	_click(_checkbox("IsSelectAllSitesSelected", _near($_LABEL_SITE)));
+	_click(_span("Select", _near($_LABEL_SITE)));
+	_click(_listItem("6003 shelving unit 8"));
+	_click(_checkbox("IsSelectAllPartsSelected", _near($_LABEL_PART)));
+	_click(_span("Select", _near($_LABEL_PART)));
+	_click(_listItem("A1 Poster"));
+	
+	UploadFilesBrief($Filename1, $Path);
+		
+	_setValue($_TEXTAREA_ARTWORK_BRIEF_DETAILS, "artwork description");
+	_click($_SPAN_AGENCY_FIELD);
+	_click(_listItem($Agency));
+	_click($_SPAN_PRINTER_FIELD);
+	_click(_listItem($Printer));
+	_click($_SPAN_SELECT_DELIVERY_LOCATION);
+	_click(_listItem("2nd class post to store"));
+	_click($_SPAN_SELECT_COLORS_FRONT);
+	_click(_listItem("3"));
+	_click($_SPAN_SELECT_COLORS_BACK);
+	_click(_listItem("3"));
+	_click($_SPAN_EDIT_ALLOCATION);
+	_click($_SUBMIT_SEARCH_DIV_ALLOCATIONS);
+	_click($_SPAN_ADD_TO_LIST);
+	_click($_SPAN_CONFIRM);
+	
+	UploadFilesProject($Filename2, $Path);
+	_click($_BUTTON_SAVE_LINE);
+	_click($_SPAN_CLOSE);
+	
+}
+
+function getProjRefValue() 
+{
+var $ProjRef = _getText(_span("/.*/", _in($_DIV_PROJECT_REF)));
+
+return $ProjRef;
+}
+
+function CreateMoreBriefs()
+{	
+	for (var $i=0;$i<2;$i++)
+	{
+	_click($_SPAN_PLUS_BRIEFS_ADD);
+	
+	}
+}
+
+function SaveLineForAllBriefs()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+		_click(_link($BriefRef[$i]));
+		_click($_BUTTON_SAVE_LINE);
+		_click($_SPAN_CLOSE);
+	}
+}
+
+function SubmitAllBriefs()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+		_click(_checkbox("/.*/", _rightOf(_cell($BriefRef[$i])), _under($_TABLEHEADER_BRIEF_STATUS)));
+	}
+		_click($_BUTTON_SUBMIT_BRIEFS);
+		_click($_SPAN_CLOSE);
+}
+
+function getBriefValues()
+{
+var $BriefRef = new Array();
+var $tablerows = _collect("_cell", "/.*/", _under($_TABLEHEADER_BRIEF_REF));
+$tablerows.length;
+for (var $i=0; $i<$tablerows.length; $i++) {
+	
+	$BriefRef[$i] = _getText($tablerows[$i]);
+}
+	return $BriefRef;					  
+}
+	
+function printBriefValues()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++){
+		_log($BriefRef[$i]);
+	}
+}
+
+function UploadFilesBrief($Filename, $Path)
+{	
+_click($_BUTTON_BRIEF_DESKTOP_FILE);
+_setValue($_TEXTBOX_FILE_DESCRIPTION, $Filename);
+_setFile2($_FILE_DESKTOP_FILE_FOR_BRIEF, $Path, $urlBriefAttach);
+_click($_BUTTON_UPLOAD);
+_click($_SPAN_CLOSE);
+
+}
+
+function UploadFilesProject($Filename, $Path)
+{ 
+_click($_SPAN_DESKTOP_FILE);
+_setValue($_TEXTBOX_FILE_DESCRIPTION, $Filename);
+_setFile2($_FILE_DESKTOP_FILE, $Path, $urlProjAttach);
+_click($_BUTTON_UPLOAD);
+
+}
+
+function PrintBuyer_NavigateToNewProject($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiprintbuyer");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($_LINK_BRIEFS_TO_ACCEPT);
+	setHundredRecordsPerPage();
+	_click(_link($ProjRef));
+}
+
+function PrintBuyer_NavigateToITGAgencyRejectedBriefs($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiprintbuyer");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($_LINK_ROUNDEL_AGENCY_REJECTED_BRIEFS_ICON);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function PrintBuyer_NavigateToITGApproveArtwork($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiprintbuyer");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($_LINK_ITG_APPROVE_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function PrintBuyer_NavigateToClientRejectedArtwork($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiprintbuyer");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($_LINK_CLIENT_REJECTED_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function SelectAllandSubmit()
+{
+	_click($_CHECKBOX_SELECTALL_BRIEFS);
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE);
+}
+
+function PrintBuyer_ApproveAllBriefs()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+		_click(_link($BriefRef[$i]));
+		_click($_BUTTON_APPROVE);
+	} 
+	_click($_BUTTON_SUBMIT);
+}
+
+function PrintBuyer_ResubmitsBriefsToProjectOwner()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+		_click(_checkbox("/.*/", _rightOf(_cell($BriefRef[$i])), _under($_TABLEHEADER_SUBMIT_TO_PROJECT_OWNER)));
+		AddTextComment("TestComment");
+	} 
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE);
+}
+
+function ApproveArtwork()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+	ApproveArtworkFiles($BriefRef[$i]);	
+	_click($_LINK_WORKFLOW);
+	_click($_LINK_ITG_APPROVE_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	} 
+	
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+	_click(_checkbox("/.*/", _rightOf(_cell($BriefRef[$i])), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)));
+	} 
+	
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE_DIV_COMMENT_CONFIRM);
+}
+
+function RejectArtwork()
+{
+	var $BriefRef = getBriefValues();
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+	RejectArtworkFiles($BriefRef[$i]);	
+	_click($_LINK_WORKFLOW);
+	_click($_LINK_APPROVE_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	} 
+	
+	for (var $i=0;$i<$BriefRef.length;$i++)
+	{
+	_click(_checkbox("/.*/", _rightOf(_cell($BriefRef[$i])), _under($_TABLEHEADER_AWAITINGARTWORK_SELECT)));
+	} 
+	
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE_DIV_COMMENT_CONFIRM);
+}
+	
+function ITGAgency_NavigateToNewProject($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiagency");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($CMN_ICON_AGENCY_BRIEFS);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function ITGAgency_NavigateToAwaitingArtwork($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiagency");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($CMN_ICON_AWAITING_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function ITGAgency_NavigateToNewAmendRequests($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiagency");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($CMN_ICON_NEW_AMEND_REQUESTS);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function ITGAgency_RejectAllBriefs()
+{
+	_click($_CHECK_BOX_REJECT_ALL);
+	AddTextComment_RejectAll("Testcomment");
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE);
+
+}
+
+function ITGAgency_AcceptAllBriefs()
+{
+	_click($_CHECKBOX_ACCEPTALL);
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE);
+}
+
+function ITGAgency_SubmitArtwork()
+{
+	_click($_CHECKBOX_SELECTALL_ARTWORK);
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE_DIV_COMMENT_CONFIRM);
+}
+
+function OutsideAgency_NavigateToNewProject($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahioutagency");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($CMN_ICON_AGENCY_BRIEFS);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function OutsideAgency_NavigateToAwaitingArtwork($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahioutagency");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($CMN_ICON_AWAITING_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function OutsideAgency_NavigateToNewAmendRequests($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahioutagency");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($CMN_ICON_NEW_AMEND_REQUESTS);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+}
+
+function OutsideAgency_SubmitArtwork()
+{
+	_click($_CHECKBOX_SELECTALL_ARTWORK);
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE_DIV_COMMENT_CONFIRM);
+}
+
+function OutsideAgency_RejectAllBriefs()
+{
+	_click($_CHECK_BOX_REJECT_ALL);
+	AddTextComment_RejectAll("TestingComment");
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE);
+}
+
+function OutsideAgency_AcceptAllBriefs()
+{
+	_click($_CHECKBOX_ACCEPTALL);
+	_click($_BUTTON_SUBMIT);
+	_click($_SPAN_CLOSE);
+}
+
+function ClientReSubmitsRejectedBriefs($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiclienta");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_assert(_isVisible($_LINK_SEARCH_PROJECT));
+	_click($_LINK_SEARCH_PROJECT);
+	_setValue($_TEXTBOX_PROJECTREFERENCE, $ProjRef);
+	_click($_BUTTON_SEARCH);
+	_click(_link($ProjRef));
+	SubmitAllBriefs();
+}
+
+function ClientUser_NavigatesToApproveArtwork($ProjRef)
+{
+	_setValue($_TEXTBOX_USERNAME, "sahiclienta");
+	_setValue($_PASSWORD_PASSWORD, "Pa55Word!!");
+	_click($_SUBMIT_LOGIN);
+	_click($CMN_LINK_WORKFLOW_ROUNDICON);
+	_click($_LINK_APPROVE_ARTWORK);
+	setHundredRecordsPerPage();
+	_click(_link("/.*/", _rightOf(_cell($ProjRef)), _under($_TABLEHEADER_NO_OF_BRIEFS)));
+	
+}
+
